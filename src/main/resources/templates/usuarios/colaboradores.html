@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="es" xmlns:th="https://www.thymeleaf.org">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Colaboradores | Minimarket</title><link rel="stylesheet" th:href="@{/css/aplicacion.css}"></head>
+<body>
+<header class="barra-superior"><a class="marca enlace-marca" th:href="@{/}">Minimarket</a><a class="enlace-volver" th:href="@{/}">Volver al inicio</a></header>
+<main class="contenido-principal">
+    <section class="encabezado-lista"><div><p class="etiqueta">Administraci&#243;n</p><h1>Colaboradores</h1></div>
+        <a class="boton-principal boton-ancho-auto" th:href="@{/colaboradores/nuevo}">Nuevo colaborador</a></section>
+    <p class="mensaje-formulario mensaje-exito" th:if="${mensaje}" th:text="${mensaje}"></p>
+    <p class="mensaje-formulario mensaje-error" th:if="${error}" th:text="${error}" role="alert"></p>
+    <p class="estado-vacio" th:if="${#lists.isEmpty(colaboradores)}">A&#250;n no hay colaboradores registrados.</p>
+    <section class="tabla-contenedor" th:unless="${#lists.isEmpty(colaboradores)}">
+        <table><thead><tr><th>Nombre</th><th>Usuario</th><th>Perfil</th><th>Acceso</th><th>Acciones</th></tr></thead>
+            <tbody><tr th:each="persona : ${colaboradores}">
+                <td th:text="${persona.nombre}"></td><td th:text="${persona.nombreUsuario}"></td><td>Vendedor</td>
+                <td th:text="${persona.activo ? 'Activo' : 'Desactivado'}"></td>
+                <td><div class="acciones-colaborador">
+                    <a class="boton-secundario boton-tabla" th:href="@{/colaboradores/{id}/editar(id=${persona.id})}">Editar</a>
+                    <a class="boton-secundario boton-tabla" th:href="@{/colaboradores/{id}/contrasena(id=${persona.id})}">Cambiar contrase&#241;a</a>
+                    <form th:action="@{/colaboradores/{id}/estado(id=${persona.id})}" method="post">
+                        <input type="hidden" name="activo" th:value="${!persona.activo}">
+                        <button class="boton-secundario boton-tabla" type="submit" th:text="${persona.activo ? 'Desactivar acceso' : 'Activar acceso'}"></button>
+                    </form>
+                </div></td>
+            </tr></tbody></table>
+    </section>
+</main></body></html>

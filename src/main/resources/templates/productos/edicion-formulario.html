@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="es" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar producto | Minimarket</title>
+    <link rel="stylesheet" th:href="@{/css/aplicacion.css}">
+</head>
+<body>
+<main class="pantalla-formulario">
+    <section class="formulario-panel formulario-panel-ancho" aria-labelledby="titulo-producto">
+        <div class="marca marca-formulario">
+            <span class="marca-iniciales" aria-hidden="true">MM</span>
+            <span>Minimarket</span>
+        </div>
+        <h1 id="titulo-producto">Editar producto</h1>
+
+        <div class="mensaje-formulario mensaje-error" th:if="${errorGeneral}" th:text="${errorGeneral}">Error</div>
+
+        <form th:action="@{/productos/{id}/editar(id=${productoId})}" th:object="${formulario}" method="post" novalidate>
+            <div class="cuadricula-formulario">
+                <div class="campo-formulario campo-completo">
+                    <label for="nombre">Nombre del producto</label>
+                    <input id="nombre" type="text" th:field="*{nombre}" autofocus>
+                    <p class="error-formulario" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}">Error</p>
+                </div>
+
+                <div class="campo-formulario">
+                    <label for="categoriaId">Categoría</label>
+                    <select id="categoriaId" th:field="*{categoriaId}">
+                        <option th:each="categoria : ${categorias}" th:value="${categoria.id}" th:text="${categoria.nombre}">Abarrotes</option>
+                    </select>
+                    <p class="error-formulario" th:if="${#fields.hasErrors('categoriaId')}" th:errors="*{categoriaId}">Error</p>
+                </div>
+
+                <div class="campo-formulario">
+                    <label for="tipoVenta">Forma de venta</label>
+                    <select id="tipoVenta" th:field="*{tipoVenta}">
+                        <option th:each="tipo : ${tiposVenta}" th:value="${tipo}" th:text="${tipo == T(com.minimarket.productos.domain.TipoVenta).PESO ? 'Por kilo' : 'Por unidad'}">Por unidad</option>
+                    </select>
+                    <p class="error-formulario" th:if="${#fields.hasErrors('tipoVenta')}" th:errors="*{tipoVenta}">Error</p>
+                </div>
+
+                <div class="campo-formulario">
+                    <label for="stockMinimo">Stock mínimo</label>
+                    <input id="stockMinimo" type="number" th:field="*{stockMinimo}" min="0" step="0.01">
+                    <p class="error-formulario" th:if="${#fields.hasErrors('stockMinimo')}" th:errors="*{stockMinimo}">Error</p>
+                </div>
+            </div>
+
+            <div class="acciones-formulario">
+                <a class="boton-secundario" th:href="@{/productos}">Cancelar</a>
+                <button class="boton-principal boton-ancho-auto" type="submit">Guardar cambios</button>
+            </div>
+        </form>
+    </section>
+</main>
+</body>
+</html>

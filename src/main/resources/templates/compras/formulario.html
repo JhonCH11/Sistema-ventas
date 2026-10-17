@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="es" xmlns:th="https://www.thymeleaf.org"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Nueva compra | Minimarket</title><link rel="stylesheet" th:href="@{/css/aplicacion.css}"><link rel="stylesheet" th:href="@{/css/compras.css}"><script defer th:src="@{/js/compras.js}"></script></head>
+<body><header class="barra-superior"><a class="marca enlace-marca" th:href="@{/}">Minimarket</a><a class="enlace-volver" th:href="@{/compras}">Volver a compras</a></header>
+<main class="contenido-principal"><h1>Nueva compra</h1><p class="mensaje-formulario mensaje-error" th:if="${error}" th:text="${error}" role="alert"></p>
+<p th:if="${#lists.isEmpty(productos)}">No hay productos disponibles. <a th:href="@{/productos}">Ir a Productos</a></p>
+<form id="form-compra" th:unless="${#lists.isEmpty(productos)}" th:action="@{/compras/confirmar}" th:object="${compraForm}" method="post">
+<input type="hidden" th:field="*{token}"><ul class="mensaje-formulario mensaje-error" th:if="${#fields.hasAnyErrors()}"><li th:each="e:${#fields.allErrors()}" th:text="${e}"></li></ul>
+<div class="cuadricula-formulario"><div class="campo-formulario"><label for="proveedorId">Proveedor (opcional)</label><select id="proveedorId" th:field="*{proveedorId}"><option value="">Sin proveedor registrado</option><option th:each="p:${proveedores}" th:value="${p.id}" th:text="${p.nombre}"></option></select></div>
+<div class="campo-formulario"><label for="documento">N&#250;mero de documento (opcional)</label><input id="documento" th:field="*{documento}" maxlength="100"></div></div>
+<h2>Mercader&#237;a recibida</h2><div id="lineas-compra">
+<div class="linea-compra" th:each="f,s:*{lineas}"><div class="campo-formulario"><label>Producto<select class="producto-compra" th:field="*{lineas[__${s.index}__].productoId}" required><option value="">Seleccionar producto</option><option th:each="p:${productos}" th:value="${p.id}" th:attr="data-tipo=${p.tipoVenta.name()}" th:text="${p.nombre+(p.tipoVenta.name()=='PESO'?' (kg)':' (unidad)')}"></option></select></label></div>
+<div class="campo-formulario"><label><span class="unidad-cantidad">Cantidad recibida</span><input class="cantidad-compra" type="number" th:field="*{lineas[__${s.index}__].cantidad}" min="0.01" max="9999999999.99" step="0.01" required></label></div>
+<div class="campo-formulario"><label><span class="unidad-costo">Costo por kg/unidad (S/)</span><input class="costo-compra" type="number" th:field="*{lineas[__${s.index}__].costoUnitario}" min="0.01" max="9999999999.99" step="0.01" required></label></div>
+<div class="subtotal-compra"><span>Subtotal</span><output>S/ 0.00</output></div><button class="boton-secundario quitar-linea" type="button">Quitar</button></div></div>
+<button id="agregar-linea" class="boton-secundario" type="button" disabled>Agregar producto</button>
+<div class="campo-formulario observacion-compra"><label for="observacion">Observaci&#243;n (opcional)</label><input id="observacion" th:field="*{observacion}" maxlength="300"></div>
+<p class="total-compra" aria-live="polite">Total de la compra: <output id="total-compra">S/ 0.00</output></p>
+<div class="acciones-formulario"><button id="confirmar-compra" class="boton-principal boton-ancho-auto">Confirmar compra e ingresar stock</button><a class="boton-secundario" th:href="@{/compras}">Cancelar</a></div></form>
+</main></body></html>

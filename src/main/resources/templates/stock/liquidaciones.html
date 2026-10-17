@@ -1,0 +1,10 @@
+<!doctype html>
+<html lang="es" xmlns:th="https://www.thymeleaf.org"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Productos en liquidaci&#243;n | Minimarket</title><link rel="stylesheet" th:href="@{/css/aplicacion.css}"></head>
+<body><header class="barra-superior"><a class="marca enlace-marca" th:href="@{/}">Minimarket</a><a class="enlace-volver" th:href="@{/}">Volver al inicio</a></header>
+<main class="contenido-principal"><section class="encabezado-lista"><div><p class="etiqueta">Administraci&#243;n</p><h1>Productos en liquidaci&#243;n</h1></div><div class="acciones-encabezado"><a class="boton-secundario" th:href="@{/stock/mermas}">Mermas</a><a class="boton-principal boton-ancho-auto" th:href="@{/stock/liquidaciones/nueva}">Nueva liquidaci&#243;n</a></div></section>
+<p class="mensaje-formulario mensaje-exito" th:if="${mensaje}" th:text="${mensaje}"></p>
+<p class="mensaje-formulario mensaje-error" th:if="${error}" th:text="${error}" role="alert"></p>
+<p th:if="${#lists.isEmpty(saldos)}">No hay productos pendientes de liquidaci&#243;n.</p>
+<div class="tabla-contenedor" th:unless="${#lists.isEmpty(saldos)}"><table><thead><tr><th>Producto</th><th>Disponible</th><th>Precio reducido</th><th>Costo de compra</th><th>Llegada</th><th>Separado</th><th>Acci&#243;n</th></tr></thead><tbody>
+<tr th:each="s:${saldos}"><td th:text="${s.nombre}"></td><td th:text="${s.cantidad+(s.tipo=='PESO'?' kg':' unidades')}"></td><td th:text="${'S/ '+s.precio}"></td><td th:text="${'S/ '+s.costo}"></td><td th:text="${s.llegada!=null?#temporals.format(s.llegada,'dd/MM/yyyy'):'Sin fecha conocida'}"></td><td th:text="${#temporals.format(s.registrada,'dd/MM/yyyy')}"></td><td><a class="boton-secundario boton-tabla" th:href="@{/stock/mermas/nueva(productoId=${s.productoId})}">Registrar merma</a></td></tr>
+</tbody></table></div><div class="pie-panel"><a class="boton-secundario" th:href="@{/ventas}">Nueva venta</a><a class="boton-secundario" th:href="@{/precios}">Precios del d&#237;a</a></div></main></body></html>

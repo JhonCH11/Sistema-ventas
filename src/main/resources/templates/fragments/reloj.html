@@ -1,0 +1,11 @@
+<!doctype html>
+<html lang="es" xmlns:th="https://www.thymeleaf.org"><body>
+<section th:fragment="reloj" class="horario-jornada" aria-label="Horario de trabajo" th:attr="data-horario-url=@{/caja/horario}">
+    <div class="horario-fila">
+        <div><time class="reloj-jornada" aria-label="Hora de Peru">--:--:--</time><span class="fecha-jornada"></span></div>
+        <span class="horario-previsto">Horario diario: 6:00 a. m. a 9:00 p. m.</span>
+        <a class="boton-secundario horario-extender" th:href="@{/caja/horario/extender}" hidden>Extender horario de hoy</a>
+    </div>
+    <p class="aviso-horario" role="status" hidden></p>
+</section>
+</body></html>

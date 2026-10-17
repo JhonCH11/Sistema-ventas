@@ -1,0 +1,8 @@
+<!doctype html>
+<html lang="es" xmlns:th="https://www.thymeleaf.org"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Proveedores | Minimarket</title><link rel="stylesheet" th:href="@{/css/aplicacion.css}"></head>
+<body><header class="barra-superior"><a class="marca enlace-marca" th:href="@{/}">Minimarket</a><a class="enlace-volver" th:href="@{/compras}">Volver a compras</a></header><main class="contenido-principal">
+<div class="encabezado-lista"><h1>Proveedores</h1><a class="boton-principal boton-ancho-auto" th:href="@{/compras/proveedores/nuevo}">Nuevo proveedor</a></div>
+<p class="mensaje-formulario mensaje-exito" th:if="${mensaje}" th:text="${mensaje}"></p><p class="mensaje-formulario mensaje-error" th:if="${error}" th:text="${error}" role="alert"></p>
+<p th:if="${#lists.isEmpty(proveedores)}">No hay proveedores registrados.</p>
+<div class="tabla-contenedor" th:unless="${#lists.isEmpty(proveedores)}"><table><thead><tr><th>Nombre</th><th>Tel&#233;fono</th><th>Estado</th><th></th></tr></thead><tbody><tr th:each="p:${proveedores}"><td th:text="${p.nombre}"></td><td th:text="${p.telefono?:'-'}"></td><td th:text="${p.activo?'Activo':'Inactivo'}"></td><td><a class="boton-secundario" th:href="@{/compras/proveedores/{id}/editar(id=${p.id})}">Editar</a></td></tr></tbody></table></div>
+</main></body></html>

@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="es" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Caja | Minimarket</title>
+    <link rel="stylesheet" th:href="@{/css/aplicacion.css}">
+    <script defer th:src="@{/js/caja.js}"></script>
+    <script defer th:src="@{/js/reloj.js}"></script>
+</head>
+<body>
+<header class="barra-superior">
+    <a class="marca enlace-marca" th:href="@{/}">
+        <span class="marca-iniciales" aria-hidden="true">MM</span>
+        <span>Minimarket</span>
+    </a>
+    <a class="enlace-volver" th:href="@{/}">Volver al inicio</a>
+</header>
+<div th:replace="~{fragments/reloj :: reloj}"></div>
+
+<main class="contenido-principal">
+    <section class="encabezado-lista">
+        <div>
+            <p class="etiqueta" th:text="${fechaActual}">domingo 5 de octubre</p>
+            <h1>Caja</h1>
+        </div>
+        <div class="acciones-encabezado" th:if="${administrador}"><a class="boton-secundario" th:href="@{/caja/historial}">Historial de caja</a><a class="boton-secundario" th:href="@{/caja/movimientos}">Movimientos de caja</a></div>
+    </section>
+
+    <p class="mensaje-formulario mensaje-exito" th:if="${mensaje}" th:text="${mensaje}">Guardado.</p>
+    <p class="mensaje-formulario mensaje-error" th:if="${errorGeneral}" th:text="${errorGeneral}">Error.</p>
+
+    <section class="seccion-operacion" th:if="${apertura == null}">
+        <h2>Abrir caja del día</h2>
+        <form th:action="@{/caja/aperturas}" th:object="${formulario}" method="post" novalidate>
+            <div class="campo-formulario campo-formulario-corto">
+                <label for="efectivoInicial">Efectivo inicial (S/)</label>
+                <input id="efectivoInicial" type="number" th:field="*{efectivoInicial}" min="0" step="0.01" autofocus>
+                <p class="error-formulario" th:if="${#fields.hasErrors('efectivoInicial')}" th:errors="*{efectivoInicial}">Error</p>
+            </div>
+            <button class="boton-principal boton-ancho-auto" type="submit">Abrir caja</button>
+        </form>
+    </section>
+
+    <section class="estado-caja-abierta" th:if="${apertura != null and apertura.estado.name() == 'ABIERTA'}">
+        <p class="etiqueta">Caja abierta</p>
+        <h2 th:text="${'Efectivo inicial: S/ ' + apertura.efectivoInicial}">Efectivo inicial: S/ 0.00</h2>
+        <p>La caja está disponible para registrar ventas del día.</p>
+        <div class="acciones-formulario">
+            <a class="boton-principal boton-ancho-auto" th:href="@{/ventas}">Ir a nueva venta</a>
+            <a class="boton-secundario" th:if="${administrador}" th:href="@{/caja/horario/extender}">Extender horario de hoy</a>
+        </div>
+    </section>
+
+    <details id="cierre-caja" class="cierre-caja" th:open="${cierreExpandido == true}" th:if="${apertura != null and apertura.estado.name() == 'ABIERTA'}">
+        <summary class="boton-secundario">Cerrar caja del día</summary>
+        <div class="contenido-cierre-caja">
+        <h2>Cerrar caja del día</h2>
+        <p class="importe-destacado" th:text="${'Efectivo esperado: S/ ' + efectivoEsperado}">Efectivo esperado: S/ 0.00</p>
+        <form id="formulario-cierre" th:action="@{/caja/cierres}" th:object="${cierreFormulario}" method="post">
+            <div class="campo-formulario campo-formulario-corto">
+                <label for="efectivoContado">Efectivo contado (S/)</label>
+                <input id="efectivoContado" type="number" th:field="*{efectivoContado}" min="0" step="0.01" required>
+                <p class="error-formulario" th:if="${#fields.hasErrors('efectivoContado')}" th:errors="*{efectivoContado}">Error</p>
+            </div>
+            <div class="campo-formulario">
+                <label for="observacion">Observación (opcional)</label>
+                <input id="observacion" type="text" th:field="*{observacion}">
+                <p class="error-formulario" th:if="${#fields.hasErrors('observacion')}" th:errors="*{observacion}">Error</p>
+            </div>
+            <div class="acciones-formulario">
+                <button id="cancelar-cierre" class="boton-secundario" type="button" hidden>Cancelar</button>
+                <button class="boton-principal boton-ancho-auto" type="submit">Confirmar cierre</button>
+            </div>
+        </form>
+        </div>
+    </details>
+
+    <section class="estado-caja-cerrada" th:if="${apertura != null and apertura.estado.name() == 'CERRADA'}">
+        <p class="etiqueta">Caja cerrada</p>
+        <h2>La jornada de hoy ya finalizó</h2>
+        <a class="boton-principal boton-ancho-auto" th:if="${administrador}" th:href="@{/caja/reapertura}">Reabrir caja de hoy</a>
+        <p th:if="${cierre != null}" th:text="${'Efectivo esperado: S/ ' + cierre.efectivoEsperado + ' | Contado: S/ ' + cierre.efectivoContado + ' | Diferencia: S/ ' + cierre.diferencia}">Resumen del cierre</p>
+    </section>
+</main>
+</body>
+</html>

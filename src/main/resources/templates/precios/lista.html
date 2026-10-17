@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="es" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Precios del día | Minimarket</title>
+    <link rel="stylesheet" th:href="@{/css/aplicacion.css}">
+</head>
+<body>
+<header class="barra-superior">
+    <a class="marca enlace-marca" th:href="@{/}">
+        <span class="marca-iniciales" aria-hidden="true">MM</span>
+        <span>Minimarket</span>
+    </a>
+    <a class="enlace-volver" th:href="@{/}">Volver al inicio</a>
+</header>
+
+<main class="contenido-principal">
+    <section class="encabezado-lista">
+        <div>
+            <p class="etiqueta">Actualización diaria</p>
+            <h1>Precios del día</h1>
+        </div>
+    </section>
+
+    <p class="mensaje-formulario mensaje-exito" th:if="${mensaje}" th:text="${mensaje}">Guardado.</p>
+    <p class="mensaje-formulario mensaje-error" th:if="${error}" th:text="${error}">Error.</p>
+
+    <section class="tabla-contenedor" th:if="${not #lists.isEmpty(productos)}">
+        <table>
+            <thead>
+            <tr>
+                <th>Producto</th>
+                <th>Venta</th>
+                <th>Precio actual</th>
+                <th>Nuevo precio</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="producto : ${productos}">
+                <td>
+                    <strong th:text="${producto.nombre}">Arroz</strong>
+                    <span class="texto-secundario" th:text="${producto.categoria.nombre}">Abarrotes</span>
+                </td>
+                <td th:text="${producto.tipoVenta == T(com.minimarket.productos.domain.TipoVenta).PESO ? 'Por kilo' : 'Por unidad'}">Por unidad</td>
+                <td class="precio-actual" th:text="${'S/ ' + producto.precioActual}">S/ 0.00</td>
+                <td>
+                    <form class="formulario-precio" th:action="@{/precios/{id}(id=${producto.id})}" method="post">
+                        <label class="solo-lector" th:for="${'precio-' + producto.id}">Nuevo precio</label>
+                        <input th:id="${'precio-' + producto.id}" name="nuevoPrecio" type="number" min="0.01" step="0.01" required>
+                        <button class="boton-principal boton-ancho-auto" type="submit">Guardar</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="estado-vacio" th:if="${#lists.isEmpty(productos)}">
+        <h2>Aún no hay productos registrados</h2>
+        <a class="boton-principal boton-ancho-auto" th:href="@{/productos}">Ir a productos</a>
+    </section>
+</main>
+</body>
+</html>

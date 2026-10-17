@@ -1,0 +1,53 @@
+# Compilacion y resultados de pruebas
+/target/
+/build/
+/dist/
+*.class
+*.jar
+*.war
+*.log
+
+# Configuracion y secretos locales
+**/application.properties
+**/application-local.properties
+**/application-prod.properties
+**/application-local.yml
+**/application-prod.yml
+.env
+.env.*
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+*.keystore
+
+# Datos y respaldos; conservar las migraciones de estructura
+/respaldos/
+/backups/
+/datos/
+/data/
+*.dump
+*.bak
+*.sql
+!src/main/resources/db/migration/*.sql
+*.sql.gz
+*.zip
+*.xlsx
+*.xls
+*.csv
+
+# Archivos del entorno de desarrollo
+.idea/
+.vscode/
+*.iml
+*.iws
+*.ipr
+.classpath
+.project
+.settings/
+.factorypath
+.apt_generated/
+.sts4-cache/
+.DS_Store
+Thumbs.db

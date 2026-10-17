@@ -1,0 +1,11 @@
+<!doctype html>
+<html lang="es" xmlns:th="https://www.thymeleaf.org"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Proveedor | Minimarket</title><link rel="stylesheet" th:href="@{/css/aplicacion.css}"><link rel="stylesheet" th:href="@{/css/compras.css}"></head>
+<body><header class="barra-superior"><a class="marca enlace-marca" th:href="@{/}">Minimarket</a><a class="enlace-volver" th:href="@{/compras/proveedores}">Volver a proveedores</a></header><main class="contenido-principal"><h1 th:text="${proveedorId==null?'Nuevo proveedor':'Editar proveedor'}"></h1>
+<p class="mensaje-formulario mensaje-error" th:if="${error}" th:text="${error}" role="alert"></p>
+<form class="formulario-movimiento-caja" method="post" th:object="${proveedorForm}" th:action="${proveedorId==null}?@{/compras/proveedores/nuevo}:@{/compras/proveedores/{id}/editar(id=${proveedorId})}">
+<ul class="mensaje-formulario mensaje-error" th:if="${#fields.hasAnyErrors()}"><li th:each="e:${#fields.allErrors()}" th:text="${e}"></li></ul>
+<div class="campo-formulario"><label for="nombre">Nombre del proveedor</label><input id="nombre" th:field="*{nombre}" maxlength="150" required></div>
+<div class="campo-formulario"><label for="telefono">Tel&#233;fono (opcional)</label><input id="telefono" type="tel" th:field="*{telefono}" maxlength="30"></div>
+<div class="campo-formulario"><label class="proveedor-activo"><input type="checkbox" th:field="*{activo}">Proveedor activo</label></div>
+<div class="acciones-formulario"><button class="boton-principal boton-ancho-auto">Guardar proveedor</button><a class="boton-secundario" th:href="@{/compras/proveedores}">Cancelar</a></div>
+</form></main></body></html>

@@ -1,0 +1,9 @@
+<!doctype html>
+<html lang="es" xmlns:th="https://www.thymeleaf.org"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title th:text="${titulo}"></title><link rel="stylesheet" th:href="@{/css/aplicacion.css}"></head>
+<body><main class="pantalla-formulario"><section class="formulario-panel"><h1 th:text="${titulo}"></h1>
+<p th:if="${#lists.isEmpty(productos)}">No hay productos con stock disponible.</p>
+<form method="get" th:action="@{${ruta}}" th:unless="${#lists.isEmpty(productos)}">
+<div class="campo-formulario"><label for="productoId">Producto</label><select id="productoId" name="productoId" required>
+<option value="">Seleccione un producto</option><option th:each="p:${productos}" th:value="${p.id}" th:text="${p.nombre+' - '+p.stockActual+(p.tipoVenta.name()=='PESO'?' kg':' unidades')}"></option></select></div>
+<div class="acciones-formulario"><a class="boton-secundario" th:href="@{/}">Cancelar</a><button class="boton-principal boton-ancho-auto">Continuar</button></div>
+</form></section></main></body></html>

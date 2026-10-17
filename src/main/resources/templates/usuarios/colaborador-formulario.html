@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="es" xmlns:th="https://www.thymeleaf.org">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="${colaboradorId != null ? 'Editar colaborador | Minimarket' : 'Nuevo colaborador | Minimarket'}">Colaborador | Minimarket</title><link rel="stylesheet" th:href="@{/css/aplicacion.css}"></head>
+<body><main class="pantalla-formulario"><section class="formulario-panel">
+    <h1 th:text="${colaboradorId != null ? 'Editar colaborador' : 'Nuevo colaborador'}">Colaborador</h1>
+    <p class="mensaje-formulario mensaje-error" th:if="${error}" th:text="${error}" role="alert"></p>
+    <form th:action="${colaboradorId != null} ? @{/colaboradores/{id}/editar(id=${colaboradorId})} : @{/colaboradores/nuevo}" th:object="${formulario}" method="post">
+        <div class="campo-formulario"><label for="nombre">Nombre completo</label><input id="nombre" th:field="*{nombre}" maxlength="120" required>
+            <p class="error-formulario" th:errors="*{nombre}"></p></div>
+        <div class="campo-formulario"><label for="nombreUsuario">Usuario para ingresar</label><input id="nombreUsuario" th:field="*{nombreUsuario}" autocomplete="off" pattern="[a-zA-Z0-9._-]{4,60}" minlength="4" maxlength="60" required>
+            <p class="error-formulario" th:errors="*{nombreUsuario}"></p></div>
+        <th:block th:if="${colaboradorId == null}"><div th:replace="~{usuarios/colaborador-clave :: camposClave}"></div></th:block>
+        <div class="acciones-formulario"><a class="boton-secundario" th:href="@{/colaboradores}">Cancelar</a><button class="boton-principal boton-ancho-auto" type="submit" th:text="${colaboradorId != null ? 'Guardar cambios' : 'Registrar colaborador'}">Guardar</button></div>
+    </form>
+</section></main></body></html>

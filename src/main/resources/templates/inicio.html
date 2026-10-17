@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="es" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimarket</title>
+    <link rel="stylesheet" th:href="@{/css/aplicacion.css}">
+    <script defer th:src="@{/js/reloj.js}"></script>
+</head>
+<body>
+<header class="barra-superior">
+    <div class="marca">
+        <span class="marca-iniciales" aria-hidden="true">MM</span>
+        <span>Minimarket</span>
+    </div>
+    <div class="sesion">
+        <span class="fecha" th:text="${fechaActual}">sábado 4 de octubre</span>
+        <span class="usuario-activo" aria-label="Persona que usa el sistema" th:text="${nombrePersona}">Nombre de la persona</span>
+        <form th:action="@{/logout}" method="post">
+            <button class="boton-sesion" type="submit">Cerrar sesión</button>
+        </form>
+    </div>
+</header>
+<div th:replace="~{fragments/reloj :: reloj}"></div>
+
+<main class="contenido-principal">
+    <section class="encabezado-pagina" aria-labelledby="titulo-principal">
+        <p class="etiqueta">Panel principal</p>
+        <h1 id="titulo-principal">Operaciones del día</h1>
+    </section>
+
+    <section class="acciones" aria-label="Acciones principales">
+        <a class="accion accion-principal accion-enlace" th:href="@{/ventas}">
+            <span class="accion-titulo">Nueva venta</span>
+            <span class="accion-detalle">Registrar venta</span>
+        </a>
+        <a class="accion accion-enlace" th:href="@{/productos}">
+            <span class="accion-titulo">Productos</span>
+            <span class="accion-detalle">Categorías y stock inicial</span>
+        </a>
+        <a class="accion accion-enlace" th:href="@{/stock}">
+            <span class="accion-titulo">Stock</span>
+            <span class="accion-detalle">Ingresar mercadería</span>
+        </a>
+        <a class="accion accion-enlace" th:if="${administrador}" th:href="@{/precios}">
+            <span class="accion-titulo">Precios del día</span>
+            <span class="accion-detalle">Actualizar precios</span>
+        </a>
+        <a class="accion accion-enlace" th:href="@{/ventas/realizadas}">
+            <span class="accion-titulo">Ventas realizadas</span>
+            <span class="accion-detalle">Consultar ventas y tickets</span>
+        </a>
+        <a class="accion accion-enlace" th:href="@{/caja}">
+            <span class="accion-titulo">Caja</span>
+            <span class="accion-detalle">Apertura del día</span>
+        </a>
+    </section>
+
+    <section class="alertas-inicio" aria-labelledby="titulo-alertas">
+        <div class="encabezado-alertas"><h2 id="titulo-alertas">Atenci&#243;n al inventario</h2><a class="boton-secundario" th:href="@{/stock/alertas}">Ver todas las alertas</a></div>
+        <p th:if="${alertasStock.total==0}">No hay productos agotados ni con stock bajo.</p>
+        <th:block th:if="${alertasStock.total>0}">
+            <p><strong class="alerta-agotado" th:text="${'Agotados: '+alertasStock.agotados}"></strong><span class="separador-alertas" aria-hidden="true"> | </span><strong class="alerta-bajo" th:text="${'Stock bajo: '+alertasStock.bajos}"></strong></p>
+            <div th:replace="~{fragments/alertas-stock :: tabla(${alertasStock.destacados})}"></div>
+            <p class="detalle-alertas" th:if="${alertasStock.total>6}" th:text="${'Mostrando 6 de '+alertasStock.total+' productos. Consulte todas las alertas para ver los restantes.'}"></p>
+        </th:block>
+    </section>
+
+    <section class="pie-panel" aria-label="Acciones secundarias" th:if="${administrador}">
+        <a class="boton-secundario" th:href="@{/reportes/resumen-diario}">Resumen diario</a>
+        <a class="boton-secundario" th:href="@{/importaciones/excel}">Importar desde Excel</a>
+        <a class="boton-secundario" th:href="@{/compras}">Compras y proveedores</a>
+        <a class="boton-secundario" th:href="@{/caja}">Caja y horario</a>
+        <a class="boton-secundario" th:href="@{/caja/movimientos}">Movimientos de caja</a>
+        <a class="boton-secundario" th:href="@{/caja/historial}">Historial de caja</a>
+        <a class="boton-secundario" th:href="@{/colaboradores}">Colaboradores</a>
+        <a class="boton-secundario" th:href="@{/stock/liquidaciones}">Productos en liquidaci&#243;n</a>
+        <a class="boton-secundario" th:href="@{/stock/mermas}">Mermas</a>
+        <a class="boton-secundario" th:href="@{/reportes}">Reportes</a>
+        <a class="boton-secundario" th:href="@{/configuracion/negocio}">Configuración</a>
+    </section>
+</main>
+</body>
+</html>

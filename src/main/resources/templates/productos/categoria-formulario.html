@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="es" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nueva categoría | Minimarket</title>
+    <link rel="stylesheet" th:href="@{/css/aplicacion.css}">
+</head>
+<body>
+<main class="pantalla-formulario">
+    <section class="formulario-panel" aria-labelledby="titulo-categoria">
+        <div class="marca marca-formulario">
+            <span class="marca-iniciales" aria-hidden="true">MM</span>
+            <span>Minimarket</span>
+        </div>
+        <h1 id="titulo-categoria">Nueva categoría</h1>
+
+        <form th:action="@{/productos/categorias}" th:object="${formulario}" method="post" novalidate>
+            <div class="campo-formulario">
+                <label for="nombre">Nombre de la categoría</label>
+                <input id="nombre" type="text" th:field="*{nombre}" autofocus>
+                <p class="error-formulario" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}">Error</p>
+            </div>
+            <div class="acciones-formulario">
+                <a class="boton-secundario" th:href="@{/productos}">Cancelar</a>
+                <button class="boton-principal boton-ancho-auto" type="submit">Guardar categoría</button>
+            </div>
+        </form>
+    </section>
+</main>
+</body>
+</html>

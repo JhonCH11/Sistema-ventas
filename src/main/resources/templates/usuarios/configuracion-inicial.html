@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="es" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear administrador | Minimarket</title>
+    <link rel="stylesheet" th:href="@{/css/aplicacion.css}">
+</head>
+<body>
+<main class="pantalla-formulario">
+    <section class="formulario-panel" aria-labelledby="titulo-configuracion">
+        <div class="marca marca-formulario">
+            <span class="marca-iniciales" aria-hidden="true">MM</span>
+            <span>Minimarket</span>
+        </div>
+        <h1 id="titulo-configuracion">Crear administrador</h1>
+
+        <form th:action="@{/configuracion/inicial}" th:object="${formulario}" method="post" novalidate>
+            <div class="campo-formulario">
+                <label for="nombre">Nombre</label>
+                <input id="nombre" type="text" th:field="*{nombre}" autocomplete="name" autofocus>
+                <p class="error-formulario" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}">Error</p>
+            </div>
+
+            <div class="campo-formulario">
+                <label for="nombreUsuario">Nombre de usuario</label>
+                <input id="nombreUsuario" type="text" th:field="*{nombreUsuario}" autocomplete="username">
+                <p class="error-formulario" th:if="${#fields.hasErrors('nombreUsuario')}" th:errors="*{nombreUsuario}">Error</p>
+            </div>
+
+            <div class="campo-formulario">
+                <label for="contrasena">Contraseña</label>
+                <input id="contrasena" type="password" th:field="*{contrasena}" autocomplete="new-password">
+                <p class="error-formulario" th:if="${#fields.hasErrors('contrasena')}" th:errors="*{contrasena}">Error</p>
+            </div>
+
+            <div class="campo-formulario">
+                <label for="confirmarContrasena">Confirmar contraseña</label>
+                <input id="confirmarContrasena" type="password" th:field="*{confirmarContrasena}" autocomplete="new-password">
+                <p class="error-formulario" th:if="${#fields.hasErrors('confirmarContrasena')}" th:errors="*{confirmarContrasena}">Error</p>
+            </div>
+
+            <button class="boton-principal" type="submit">Guardar administrador</button>
+        </form>
+    </section>
+</main>
+</body>
+</html>

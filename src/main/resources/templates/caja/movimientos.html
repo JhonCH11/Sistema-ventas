@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="es" xmlns:th="https://www.thymeleaf.org"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Movimientos de caja | Minimarket</title><link rel="stylesheet" th:href="@{/css/aplicacion.css}">
+</head><body>
+<header class="barra-superior"><a class="marca enlace-marca" th:href="@{/}">Minimarket</a><a class="enlace-volver" th:href="@{/caja}">Volver a Caja</a></header>
+<main class="contenido-principal">
+<section class="encabezado-lista"><div><p class="etiqueta">Administraci&#243;n</p><h1>Movimientos de caja</h1></div></section>
+<p class="mensaje-formulario mensaje-exito" th:if="${mensaje}" th:text="${mensaje}"></p>
+<p class="mensaje-formulario mensaje-error" th:if="${error}" th:text="${error}" role="alert"></p>
+<p th:if="${apertura==null}">Abra la caja de hoy para registrar movimientos.</p>
+<p th:if="${apertura!=null and !abierta}">La caja de hoy est&#225; cerrada. Los movimientos no se pueden modificar.</p>
+<p class="importe-destacado" th:if="${apertura!=null}" th:text="${'Efectivo esperado: S/ '+#numbers.formatDecimal(efectivoEsperado,1,2)}"></p>
+<section th:if="${abierta}">
+<h2>Nuevo movimiento</h2>
+<form class="formulario-movimiento-caja" th:action="@{/caja/movimientos}" th:object="${formulario}" method="post">
+<input type="hidden" th:field="*{aperturaId}"><input type="hidden" th:field="*{token}">
+<p class="error-formulario" th:if="${#fields.hasErrors('aperturaId') or #fields.hasErrors('token')}">Actualice la pantalla antes de guardar.</p>
+<div class="campo-formulario"><label for="tipo">Tipo de movimiento</label><select id="tipo" th:field="*{tipo}" required>
+<option value="">Seleccione</option><option value="INGRESO">Ingreso adicional de efectivo</option><option value="RETIRO">Retiro de efectivo</option><option value="GASTO">Gasto pagado desde caja</option></select><p class="error-formulario" th:errors="*{tipo}"></p></div>
+<div class="campo-formulario campo-formulario-corto"><label for="importe">Importe (S/)</label><input id="importe" type="number" th:field="*{importe}" min="0.01" max="9999999999.99" step="0.01" required><p class="error-formulario" th:errors="*{importe}"></p></div>
+<div class="campo-formulario"><label for="motivo">Motivo</label><input id="motivo" th:field="*{motivo}" maxlength="200" required><p class="error-formulario" th:errors="*{motivo}"></p></div>
+<button class="boton-principal boton-ancho-auto" type="submit">Registrar movimiento</button>
+</form></section>
+<section th:if="${apertura!=null}"><h2>Movimientos de hoy</h2>
+<p th:if="${#lists.isEmpty(movimientos)}">No hay movimientos adicionales registrados.</p>
+<div class="tabla-contenedor" th:unless="${#lists.isEmpty(movimientos)}"><table><thead><tr><th>N&#250;mero</th><th>Fecha y hora</th><th>Tipo</th><th>Importe</th><th>Cambio en caja</th><th>Motivo</th><th>Responsable</th><th>Estado</th></tr></thead><tbody>
+<tr th:each="m:${movimientos}"><td th:text="${'#'+m.id}"></td><td th:text="${#temporals.format(m.registradoEn,'dd/MM/yyyy HH:mm')}"></td><td th:text="${m.tipo.descripcion}"></td><td th:text="${'S/ '+#numbers.formatDecimal(m.importe,1,2)}"></td><td th:text="${(m.impacto.signum()>0?'+ ':'- ')+'S/ '+#numbers.formatDecimal(m.impacto.abs(),1,2)}"></td><td th:text="${m.motivo}"></td><td th:text="${m.usuario.nombre}"></td>
+<td><span th:if="${m.reversionDe!=null}" th:text="${'Correccion de #'+m.reversionDe.id}"></span><span th:if="${corregidos.contains(m.id)}">Corregido</span>
+<details th:if="${abierta and m.reversionDe==null and !corregidos.contains(m.id)}" th:open="${correccionId==m.id}" class="correccion-movimiento-caja"><summary>Corregir movimiento</summary>
+<form th:action="@{/caja/movimientos/{id}/corregir(id=${m.id})}" method="post">
+<input type="hidden" name="aperturaId" th:value="${apertura.id}"><input type="hidden" name="token" th:value="${tokensCorreccion[m.id]}">
+<div class="campo-formulario"><label th:for="${'motivo-'+m.id}">Motivo de la correcci&#243;n</label><input th:id="${'motivo-'+m.id}" name="motivo" th:value="${correccionId==m.id?motivoCorreccion:''}" maxlength="200" required></div>
+<button class="boton-secundario boton-tabla" type="submit">Confirmar movimiento inverso</button></form></details>
+</td></tr></tbody></table></div></section>
+</main></body></html>

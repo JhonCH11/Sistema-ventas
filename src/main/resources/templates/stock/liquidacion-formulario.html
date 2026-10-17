@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="es" xmlns:th="https://www.thymeleaf.org"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Nueva liquidaci&#243;n | Minimarket</title><link rel="stylesheet" th:href="@{/css/aplicacion.css}"></head>
+<body><main class="pantalla-formulario"><section class="formulario-panel"><h1>Nueva liquidaci&#243;n</h1><h2 th:text="${producto.nombre}"></h2>
+<p th:text="${'Disponible: '+producto.stockActual+' '+unidad+' | Precio normal: S/ '+producto.precioActual}"></p>
+<p class="mensaje-formulario mensaje-error" th:if="${error}" th:text="${error}" role="alert"></p>
+<form th:action="@{/stock/liquidaciones}" th:object="${formulario}" method="post">
+<input type="hidden" th:field="*{productoId}"><input type="hidden" th:field="*{token}">
+<p class="error-formulario" th:if="${#fields.hasAnyErrors()}">Revise los campos: cantidad, precio y costo deben ser positivos y tener como m&#225;ximo dos decimales.</p>
+<div class="campo-formulario"><label for="cantidad" th:text="${'Cantidad a separar ('+unidad+')'}"></label><input id="cantidad" type="number" th:field="*{cantidad}" th:min="${paso}" th:step="${paso}" th:max="${producto.stockActual}" required></div>
+<div class="campo-formulario"><label for="precio" th:text="${'Precio de liquidacion por '+(unidad=='kg'?'kilo':'unidad')+' (S/)'}"></label><input id="precio" type="number" th:field="*{precio}" min="0.01" step="0.01" required></div>
+<div class="campo-formulario"><label for="costoUnitario" th:text="${'Costo de compra por '+(unidad=='kg'?'kilo':'unidad')+' (S/)'}"></label><input id="costoUnitario" type="number" th:field="*{costoUnitario}" min="0.01" step="0.01" required></div>
+<div class="campo-formulario"><label for="fechaLlegada">Fecha de llegada (si se conoce)</label><input id="fechaLlegada" type="date" th:field="*{fechaLlegada}" th:max="${hoy}"></div>
+<div class="campo-formulario"><label for="motivo">Motivo para liquidar</label><input id="motivo" th:field="*{motivo}" maxlength="200" required></div>
+<div class="acciones-formulario"><a class="boton-secundario" th:href="@{/stock/liquidaciones}">Cancelar</a><button class="boton-principal boton-ancho-auto">Separar para liquidaci&#243;n</button></div>
+</form></section></main></body></html>

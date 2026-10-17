@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="es" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Datos del minimarket</title>
+    <link rel="stylesheet" th:href="@{/css/aplicacion.css}">
+</head>
+<body>
+<main class="pantalla-formulario">
+    <section class="formulario-panel" aria-labelledby="titulo">
+        <h1 id="titulo">Datos del minimarket</h1>
+        <p class="mensaje-formulario mensaje-error" role="alert" th:if="${errorRespaldo}" th:text="${errorRespaldo}"></p>
+        <p class="mensaje-formulario" role="status" th:if="${mensaje}" th:text="${mensaje}"></p>
+        <form th:action="@{/configuracion/negocio}" th:object="${formulario}" method="post">
+            <div class="campo-formulario">
+                <label for="nombre">Nombre del minimarket</label>
+                <input id="nombre" th:field="*{nombre}" maxlength="120" required>
+                <p class="error-formulario" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></p>
+            </div>
+            <div class="campo-formulario">
+                <label for="direccion">Direcci&#243;n (opcional)</label>
+                <input id="direccion" th:field="*{direccion}" maxlength="200">
+                <p class="error-formulario" th:if="${#fields.hasErrors('direccion')}" th:errors="*{direccion}"></p>
+            </div>
+            <div class="campo-formulario">
+                <label for="telefono">Tel&#233;fono (opcional)</label>
+                <input id="telefono" type="tel" th:field="*{telefono}" maxlength="30">
+                <p class="error-formulario" th:if="${#fields.hasErrors('telefono')}" th:errors="*{telefono}"></p>
+            </div>
+            <div class="campo-formulario">
+                    <label for="rutaRespaldos">Carpeta de respaldos (opcional)</label>
+                    <input id="rutaRespaldos" th:field="*{rutaRespaldos}" maxlength="500" placeholder="C:\RespaldosMinimarket">
+                    <p class="error-formulario" th:if="${#fields.hasErrors('rutaRespaldos')}" th:errors="*{rutaRespaldos}"></p>
+            </div>
+            <div class="acciones-formulario">
+                <a class="boton-secundario" th:href="@{/}">Volver al inicio</a>
+                <button class="boton-principal boton-ancho-auto" type="submit">Guardar datos</button>
+            </div>
+        </form>
+        <form th:action="@{/configuracion/negocio/respaldo}" method="post" class="acciones-formulario">
+            <button class="boton-secundario" type="submit">Crear respaldo ahora</button>
+        </form>
+    </section>
+</main>
+</body>
+</html>

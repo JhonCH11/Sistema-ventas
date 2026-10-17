@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="es" xmlns:th="https://www.thymeleaf.org">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Cambiar contrase&#241;a | Minimarket</title><link rel="stylesheet" th:href="@{/css/aplicacion.css}"></head>
+<body><main class="pantalla-formulario"><section class="formulario-panel">
+    <h1>Cambiar contrase&#241;a</h1><p th:text="${colaborador.nombre}"></p>
+    <p class="mensaje-formulario mensaje-error" th:if="${error}" th:text="${error}" role="alert"></p>
+    <form th:action="@{/colaboradores/{id}/contrasena(id=${colaborador.id})}" method="post">
+        <div th:fragment="camposClave">
+            <div class="campo-formulario"><label for="contrasena">Nueva contrase&#241;a</label><input id="contrasena" name="contrasena" type="password" autocomplete="new-password" minlength="8" maxlength="72" required></div>
+            <div class="campo-formulario"><label for="confirmarContrasena">Repetir contrase&#241;a</label><input id="confirmarContrasena" name="confirmarContrasena" type="password" autocomplete="new-password" minlength="8" maxlength="72" required></div>
+        </div>
+        <div class="acciones-formulario"><a class="boton-secundario" th:href="@{/colaboradores}">Cancelar</a><button class="boton-principal boton-ancho-auto" type="submit">Guardar contrase&#241;a</button></div>
+    </form>
+</section></main></body></html>

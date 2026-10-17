@@ -1,0 +1,5 @@
+<!doctype html>
+<html lang="es" xmlns:th="https://www.thymeleaf.org"><body><th:block th:fragment="tabla(productosAlerta)">
+<div class="tabla-contenedor tabla-alertas"><table><thead><tr><th>Producto</th><th>Disponible</th><th>M&#237;nimo</th><th>Estado</th><th>Acci&#243;n</th></tr></thead><tbody>
+<tr th:each="p:${productosAlerta}"><td th:text="${p.nombre}"></td><td th:text="${#numbers.formatDecimal(p.cantidad,1,p.tipoVenta.name()=='PESO'?2:0)+' '+p.unidad}"></td><td th:text="${#numbers.formatDecimal(p.minimo,1,p.tipoVenta.name()=='PESO'?2:0)+' '+p.unidad}"></td><td th:class="${p.agotado?'alerta-agotado':'alerta-bajo'}" th:text="${p.agotado?'Agotado':'Stock bajo'}"></td><td><a class="boton-secundario boton-tabla" th:href="@{/stock(productoId=${p.id})}">Reponer</a></td></tr>
+</tbody></table></div></th:block></body></html>

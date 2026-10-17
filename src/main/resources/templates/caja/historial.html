@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="es" xmlns:th="https://www.thymeleaf.org"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Historial de caja | Minimarket</title><link rel="stylesheet" th:href="@{/css/aplicacion.css}"></head>
+<body><header class="barra-superior"><a class="marca enlace-marca" th:href="@{/}">Minimarket</a><a class="enlace-volver" th:href="@{/caja}">Volver a Caja</a></header>
+<main class="contenido-principal"><p class="etiqueta">Administraci&#243;n</p><h1>Historial de caja</h1>
+<form class="acciones-formulario filtros-mermas" th:action="@{/caja/historial}" method="get">
+<div class="campo-formulario"><label for="desde">Desde</label><input id="desde" name="desde" type="date" th:value="${desde}" required></div>
+<div class="campo-formulario"><label for="hasta">Hasta</label><input id="hasta" name="hasta" type="date" th:value="${hasta}" required></div><button class="boton-secundario" type="submit">Consultar</button></form>
+<p class="mensaje-formulario mensaje-error" th:if="${error}" th:text="${error}" role="alert"></p>
+<p th:if="${jornadas!=null and #lists.isEmpty(jornadas)}">No hay jornadas de caja en estas fechas.</p>
+<div class="tabla-contenedor" th:if="${jornadas!=null and !#lists.isEmpty(jornadas)}"><table><thead><tr><th>Fecha</th><th>Abierta por</th><th>Fondo inicial</th><th>Estado</th><th>Esperado al cierre vigente</th><th>Contado</th><th>Diferencia</th><th>Reaperturas</th><th>Acci&#243;n</th></tr></thead><tbody>
+<tr th:each="j:${jornadas}"><td th:text="${#temporals.format(j.fecha,'dd/MM/yyyy')}"></td><td th:text="${j.responsable}"></td><td th:text="${'S/ '+#numbers.formatDecimal(j.inicial,1,2)}"></td><td th:text="${j.estado=='ABIERTA'?'Abierta':'Cerrada'}"></td>
+<td th:text="${j.esperado!=null?'S/ '+#numbers.formatDecimal(j.esperado,1,2):'Sin cierre vigente'}"></td><td th:text="${j.contado!=null?'S/ '+#numbers.formatDecimal(j.contado,1,2):'-'}"></td><td th:text="${j.diferencia!=null?'S/ '+#numbers.formatDecimal(j.diferencia,1,2):'-'}"></td><td th:text="${j.reaperturas}"></td>
+<td><a class="boton-secundario boton-tabla" th:href="@{/caja/historial/{id}(id=${j.id},desde=${desde},hasta=${hasta})}">Ver detalle</a></td></tr></tbody></table></div>
+</main></body></html>

@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="es" xmlns:th="https://www.thymeleaf.org">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Nueva venta</title><link rel="stylesheet" th:href="@{/css/aplicacion.css}"><link rel="stylesheet" th:href="@{/css/ventas.css}"><script defer th:src="@{/js/ventas.js}"></script></head>
+<body><header class="barra-superior"><a class="marca" th:href="@{/}">Minimarket</a><a th:href="@{/}">Volver al inicio</a></header>
+<div th:replace="~{fragments/reloj :: reloj}"></div>
+<script defer th:src="@{/js/reloj.js}"></script>
+<main id="punto-venta" class="contenido-principal"><h1>Nueva venta</h1>
+<p class="mensaje-formulario mensaje-error" role="alert" th:if="${errorGeneral}" th:text="${errorGeneral}"></p>
+<div class="mensaje-formulario mensaje-error" th:if="${#fields.hasErrors('agregarFormulario.*')}" th:object="${agregarFormulario}">
+<p th:each="error : ${#fields.allErrors()}" th:text="${error}"></p>
+</div>
+<div class="mensaje-formulario mensaje-error" th:if="${#fields.hasErrors('confirmarFormulario.*')}" th:object="${confirmarFormulario}">
+<p th:each="error : ${#fields.allErrors()}" th:text="${error}"></p>
+</div>
+<div class="venta-layout"><section aria-label="Productos">
+<div class="campo-formulario"><label for="buscar">Buscar producto</label><input id="buscar" type="search" autofocus></div>
+<div class="campo-formulario"><label for="categoria">Categoría</label><select id="categoria"><option value="">Todas</option><option th:each="c : ${productos.![categoria.nombre]}" th:value="${c}" th:text="${c}"></option></select></div>
+<div class="catalogo"><form data-ajax class="producto-venta" th:each="p : ${productos}" th:attr="data-nombre=${p.nombre},data-categoria=${p.categoria.nombre},data-precio=${p.precioActual}" th:action="@{/ventas/carrito}" method="post">
+<strong th:text="${p.nombre}"></strong><span th:text="${'S/ ' + p.precioActual + (p.tipoVenta.name() == 'PESO' ? ' / kg' : ' / unidad')}"></span>
+<span th:text="${'Disponible: ' + p.stockActual}"></span><input type="hidden" name="productoId" th:value="${p.id}">
+<label th:for="${'cantidad-' + p.id}" th:text="${p.tipoVenta.name() == 'PESO' ? 'Peso (kg)' : 'Unidades'}"></label>
+<input th:id="${'cantidad-' + p.id}" name="cantidad" type="number" th:step="${p.tipoVenta.name() == 'PESO' ? '0.01' : '1'}" min="0.01" th:max="${p.stockActual}" value="1" required>
+<output class="subtotal-producto" th:text="${'Subtotal: S/ ' + p.precioActual}"></output><button class="boton-principal" th:disabled="${p.stockActual.signum() == 0}">Agregar</button>
+</form></div><p id="sin-resultados" hidden>No se encontraron productos.</p></section>
+<section class="venta-resumen"><h2>Venta actual</h2>
+<form data-ajax data-cancelar th:action="@{/ventas/cancelar}" method="post"><button class="boton-secundario" th:disabled="${carrito.estaVacio()}">Cancelar venta</button></form>
+<p th:if="${carrito.estaVacio()}">Agrega productos a la venta.</p>
+<div class="linea-venta" th:each="l : ${carrito.lineas}"><strong th:text="${l.nombreProducto}"></strong><span th:text="${'S/ ' + l.precioUnitario + (l.tipoVenta.name() == 'PESO' ? ' / kg' : ' / unidad')}"></span>
+<form data-ajax th:action="@{/ventas/carrito/{id}/cantidad(id=${l.productoId})}" method="post"><label th:for="${'editar-' + l.productoId}" th:text="${l.tipoVenta.name() == 'PESO' ? 'Peso (kg)' : 'Unidades'}"></label><input th:id="${'editar-' + l.productoId}" name="cantidad" type="number" th:step="${l.tipoVenta.name() == 'PESO' ? '0.01' : '1'}" min="0.01" th:value="${l.cantidad}" required><button class="boton-secundario">Actualizar</button></form>
+<div class="linea-total"><strong th:text="${'S/ ' + l.subtotal}"></strong><form data-ajax th:action="@{/ventas/carrito/{id}/retirar(id=${l.productoId})}" method="post"><button class="boton-secundario">Retirar</button></form></div></div>
+<div class="cobro-total" th:attr="data-total=${carrito.total}"><span>Total</span><strong th:text="${'S/ ' + carrito.total}"></strong><button id="abrir-cobro" class="boton-principal" type="button" th:disabled="${carrito.estaVacio()}">Cobrar</button></div>
+<dialog id="cobro"><form id="form-cobro" th:action="@{/ventas/confirmar}" th:object="${confirmarFormulario}" method="post"><h2>Cobrar venta</h2><p th:text="${'Total: S/ ' + carrito.total}"></p><input type="hidden" name="token" th:value="${carrito.tokenConfirmacion}">
+<div class="campo-formulario"><label for="medioPago">Medio de pago</label><select id="medioPago" th:field="*{medioPago}" required><option value="EFECTIVO">Efectivo</option><option value="YAPE">Yape</option><option value="PLIN">Plin</option></select></div>
+<div id="pago-efectivo" class="campo-formulario"><label for="importeRecibido">Efectivo recibido (S/)</label><input id="importeRecibido" th:field="*{importeRecibido}" type="number" min="0" step="0.01"><output id="vuelto" aria-live="polite"></output></div>
+<div id="pago-digital" hidden><label><input type="checkbox" th:field="*{abonoVerificado}"> Abono verificado</label></div><p id="error-cobro" role="alert"></p>
+<div class="acciones-formulario"><button id="volver-venta" class="boton-secundario" type="button">Volver a la venta</button><button class="boton-principal boton-ancho-auto">Confirmar venta</button></div></form></dialog>
+</section></div></main></body></html>

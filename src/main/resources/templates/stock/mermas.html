@@ -1,0 +1,13 @@
+<!doctype html>
+<html lang="es" xmlns:th="https://www.thymeleaf.org"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Mermas | Minimarket</title><link rel="stylesheet" th:href="@{/css/aplicacion.css}"></head>
+<body><header class="barra-superior"><a class="marca enlace-marca" th:href="@{/}">Minimarket</a><a class="enlace-volver" th:href="@{/}">Volver al inicio</a></header>
+<main class="contenido-principal"><section class="encabezado-lista"><h1>Mermas</h1><div class="acciones-encabezado"><a class="boton-secundario" th:href="@{/stock/liquidaciones}">Productos en liquidaci&#243;n</a><a class="boton-principal boton-ancho-auto" th:href="@{/stock/mermas/nueva}">Registrar merma</a></div></section>
+<p class="mensaje-formulario mensaje-exito" th:if="${mensaje}" th:text="${mensaje}"></p><p class="mensaje-formulario mensaje-error" th:if="${error}" th:text="${error}" role="alert"></p>
+<form class="acciones-formulario filtros-mermas" th:action="@{/stock/mermas}" method="get"><div class="campo-formulario"><label for="desde">Desde</label><input id="desde" name="desde" type="date" th:value="${desde}" required></div><div class="campo-formulario"><label for="hasta">Hasta</label><input id="hasta" name="hasta" type="date" th:value="${hasta}" required></div><button class="boton-secundario">Consultar</button></form>
+<section th:if="${mermas!=null}"><h2 th:text="${'Perdida al costo de compra: S/ '+#numbers.formatDecimal(total,1,2)}"></h2>
+<p th:if="${#lists.isEmpty(mermas)}">No hay mermas registradas en estas fechas.</p>
+<div class="tabla-contenedor" th:unless="${#lists.isEmpty(mermas)}"><table><thead><tr><th>Fecha</th><th>Producto</th><th>Cantidad</th><th>Costo por kg/unidad</th><th>P&#233;rdida</th><th>Motivo</th><th>Observaci&#243;n</th><th>Administrador</th></tr></thead><tbody>
+<tr th:each="m:${mermas}"><td th:text="${#temporals.format(m.fecha,'dd/MM/yyyy HH:mm')}"></td><td th:text="${m.nombre}"></td><td th:text="${m.cantidad+(m.tipo=='PESO'?' kg':' unidades')}"></td><td th:text="${'S/ '+m.costo}"></td><td th:text="${'S/ '+m.perdida}"></td><td th:text="${m.motivo}"></td><td th:text="${m.observacion}"></td><td th:text="${m.administrador}"></td></tr></tbody></table></div>
+<h2 th:unless="${#lists.isEmpty(mermas)}">P&#233;rdidas por producto</h2><dl class="resumen-reporte"><th:block th:each="p:${porProducto}"><dt th:text="${p.key}"></dt><dd th:text="${'S/ '+#numbers.formatDecimal(p.value,1,2)}"></dd></th:block></dl>
+<h2 th:unless="${#lists.isEmpty(mermas)}">P&#233;rdidas por motivo</h2><dl class="resumen-reporte"><th:block th:each="p:${porMotivo}"><dt th:text="${p.key}"></dt><dd th:text="${'S/ '+#numbers.formatDecimal(p.value,1,2)}"></dd></th:block></dl>
+</section></main></body></html>

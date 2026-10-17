@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="es" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nueva venta | Minimarket</title>
+    <link rel="stylesheet" th:href="@{/css/aplicacion.css}">
+</head>
+<body>
+<header class="barra-superior">
+    <a class="marca enlace-marca" th:href="@{/}"><span class="marca-iniciales" aria-hidden="true">MM</span><span>Minimarket</span></a>
+    <a class="enlace-volver" th:href="@{/}">Volver al inicio</a>
+</header>
+
+<main class="contenido-principal">
+    <section class="encabezado-lista"><div><p class="etiqueta">Caja abierta</p><h1>Nueva venta</h1></div></section>
+    <p class="mensaje-formulario mensaje-exito" th:if="${mensaje}" th:text="${mensaje}">Venta confirmada.</p>
+    <p class="mensaje-formulario mensaje-error" th:if="${errorGeneral}" th:text="${errorGeneral}">Error.</p>
+
+    <section class="seccion-operacion">
+        <h2>Agregar producto</h2>
+        <form th:action="@{/ventas/carrito}" th:object="${agregarFormulario}" method="post" novalidate>
+            <div class="cuadricula-formulario">
+                <div class="campo-formulario campo-completo">
+                    <label for="productoId">Producto</label>
+                    <select id="productoId" th:field="*{productoId}" autofocus>
+                        <option value="">Seleccionar producto</option>
+                        <option th:each="producto : ${productos}" th:value="${producto.id}"
+                                th:text="${producto.nombre + ' | S/ ' + producto.precioActual + (producto.tipoVenta == T(com.minimarket.productos.domain.TipoVenta).PESO ? ' por kg' : ' por unidad')}">Arroz</option>
+                    </select>
+                    <p class="error-formulario" th:if="${#fields.hasErrors('productoId')}" th:errors="*{productoId}">Error</p>
+                </div>
+                <div class="campo-formulario campo-formulario-corto">
+                    <label for="cantidad">Cantidad o peso en kg</label>
+                    <input id="cantidad" type="number" th:field="*{cantidad}" min="0.01" step="0.01">
+                    <p class="error-formulario" th:if="${#fields.hasErrors('cantidad')}" th:errors="*{cantidad}">Error</p>
+                </div>
+            </div>
+            <button class="boton-principal boton-ancho-auto" type="submit">Agregar a la venta</button>
+        </form>
+    </section>
+
+    <section class="tabla-contenedor" th:if="${not carrito.estaVacio()}">
+        <table>
+            <thead><tr><th>Producto</th><th>Cantidad</th><th>Precio</th><th>Subtotal</th><th>Acción</th></tr></thead>
+            <tbody>
+            <tr th:each="linea : ${carrito.lineas}">
+                <td th:text="${linea.nombreProducto}">Arroz</td>
+                <td th:text="${linea.cantidad + (linea.tipoVenta == T(com.minimarket.productos.domain.TipoVenta).PESO ? ' kg' : ' unid.')}">1</td>
+                <td th:text="${'S/ ' + linea.precioUnitario}">S/ 0.00</td>
+                <td class="precio-actual" th:text="${'S/ ' + linea.subtotal}">S/ 0.00</td>
+                <td><form th:action="@{/ventas/carrito/{id}/retirar(id=${linea.productoId})}" method="post"><button class="boton-secundario boton-tabla" type="submit">Retirar</button></form></td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="seccion-operacion" th:if="${not carrito.estaVacio()}">
+        <h2 th:text="${'Total: S/ ' + carrito.total}">Total: S/ 0.00</h2>
+        <form th:action="@{/ventas/confirmar}" th:object="${confirmarFormulario}" method="post" novalidate>
+            <div class="cuadricula-formulario">
+                <div class="campo-formulario">
+                    <label for="medioPago">Medio de pago</label>
+                    <select id="medioPago" th:field="*{medioPago}">
+                        <option value="">Seleccionar medio</option>
+                        <option th:each="medio : ${T(com.minimarket.ventas.domain.MedioPago).values()}" th:value="${medio}" th:text="${medio == T(com.minimarket.ventas.domain.MedioPago).EFECTIVO ? 'Efectivo' : medio == T(com.minimarket.ventas.domain.MedioPago).YAPE ? 'Yape' : 'Plin'}">Efectivo</option>
+                    </select>
+                    <p class="error-formulario" th:if="${#fields.hasErrors('medioPago')}" th:errors="*{medioPago}">Error</p>
+                </div>
+                <div class="campo-formulario">
+                    <label for="importeRecibido">Efectivo recibido (solo efectivo)</label>
+                    <input id="importeRecibido" type="number" th:field="*{importeRecibido}" min="0" step="0.01">
+                </div>
+            </div>
+            <button class="boton-principal boton-ancho-auto" type="submit">Confirmar venta</button>
+        </form>
+    </section>
+
+    <section class="estado-vacio" th:if="${carrito.estaVacio()}"><h2>Aún no agregaste productos</h2></section>
+</main>
+</body>
+</html>

@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="es" xmlns:th="https://www.thymeleaf.org"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Ajustar stock</title><link rel="stylesheet" th:href="@{/css/aplicacion.css}"></head>
+<body><main class="pantalla-formulario"><section class="formulario-panel formulario-panel-ancho">
+<h1>Ajustar stock</h1><h2 th:text="${producto.nombre}"></h2><p th:text="${'Stock actual: ' + producto.stockActual + (producto.tipoVenta.name() == 'PESO' ? ' kg' : ' unidades')}"></p>
+<p role="alert" class="mensaje-formulario mensaje-error" th:if="${errorGeneral}" th:text="${errorGeneral}"></p>
+<form th:action="@{/stock/ajustes/{id}(id=${producto.id})}" th:object="${formulario}" method="post">
+<div th:if="${#fields.hasAnyErrors()}" class="mensaje-formulario mensaje-error"><p th:each="e : ${#fields.allErrors()}" th:text="${e}"></p></div>
+<input type="hidden" th:field="*{stockEsperado}">
+<div class="campo-formulario"><label for="motivo">Motivo</label><select id="motivo" th:field="*{motivo}" required><option value="">Seleccionar</option><option value="CONTEO_FISICO">Conteo físico</option><option value="PRODUCTO_VENCIDO">Producto vencido</option><option value="PRODUCTO_DANADO">Producto dañado</option><option value="PERDIDA">Pérdida</option></select></div>
+<div class="campo-formulario"><label for="cantidad">Cantidad contada (conteo físico) o cantidad a retirar (otros motivos)</label><input id="cantidad" th:field="*{cantidad}" type="number" min="0" th:step="${producto.tipoVenta.name() == 'PESO' ? '0.01' : '1'}" required></div>
+<div class="campo-formulario"><label for="observacion">Observación</label><input id="observacion" th:field="*{observacion}" maxlength="300"></div>
+<div class="acciones-formulario"><a class="boton-secundario" th:href="@{/stock}">Cancelar</a><button class="boton-principal boton-ancho-auto">Guardar ajuste</button></div>
+</form></section></main></body></html>
+

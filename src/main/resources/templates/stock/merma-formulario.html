@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="es" xmlns:th="https://www.thymeleaf.org"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Registrar merma | Minimarket</title><link rel="stylesheet" th:href="@{/css/aplicacion.css}"></head>
+<body><main class="pantalla-formulario"><section class="formulario-panel"><h1>Registrar merma</h1><h2 th:text="${producto.nombre}"></h2>
+<p th:text="${'Disponible: '+producto.stockActual+' '+unidad}"></p><p class="mensaje-formulario mensaje-error">Esta cantidad se retirar&#225; del stock vendible. Confirme que ya no puede venderse.</p>
+<p class="mensaje-formulario mensaje-error" th:if="${error}" th:text="${error}" role="alert"></p>
+<form th:action="@{/stock/mermas}" th:object="${formulario}" method="post">
+<input type="hidden" th:field="*{productoId}"><input type="hidden" th:field="*{token}">
+<p class="error-formulario" th:if="${#fields.hasAnyErrors()}">Revise la cantidad, el costo de compra y el motivo.</p>
+<div class="campo-formulario"><label for="cantidad" th:text="${'Cantidad a retirar ('+unidad+')'}"></label><input id="cantidad" type="number" th:field="*{cantidad}" th:min="${paso}" th:step="${paso}" th:max="${producto.stockActual}" required></div>
+<div class="campo-formulario"><label for="costoUnitario" th:text="${'Costo de compra por '+(unidad=='kg'?'kilo':'unidad')+' (S/)'}"></label><input id="costoUnitario" type="number" th:field="*{costoUnitario}" min="0.01" step="0.01" th:readonly="${producto.liquidacion}" required></div>
+<div class="campo-formulario"><label for="motivo">Motivo</label><select id="motivo" th:field="*{motivo}" required><option value="">Seleccione un motivo</option><option value="DETERIORO">Deterioro</option><option value="VENCIMIENTO">Vencimiento</option><option value="DANO">Producto da&#241;ado</option><option value="PERDIDA">P&#233;rdida</option></select></div>
+<div class="campo-formulario"><label for="observacion">Observaci&#243;n (opcional)</label><input id="observacion" th:field="*{observacion}" maxlength="200"></div>
+<div class="acciones-formulario"><a class="boton-secundario" th:href="@{/stock/mermas}">Cancelar</a><button class="boton-principal boton-ancho-auto">Confirmar merma</button></div>
+</form></section></main></body></html>

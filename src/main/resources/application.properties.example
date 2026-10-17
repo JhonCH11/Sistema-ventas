@@ -1,0 +1,13 @@
+spring.application.name=minimarket
+server.address=127.0.0.1
+
+spring.datasource.url=jdbc:mysql://localhost:3306/minimarket_db?useUnicode=true&characterEncoding=UTF-8&serverTimezone=America/Lima
+spring.datasource.username=minimarket_app
+spring.datasource.password=CAMBIA_ESTA_CONTRASENA
+
+spring.jpa.hibernate.ddl-auto=validate
+spring.jpa.open-in-view=false
+spring.flyway.enabled=true
+
+# Si mysqldump no esta en PATH, indicar su ruta con barras /.
+minimarket.respaldos.mysqldump=C:/Program Files/MySQL/MySQL Server 8.0/bin/mysqldump.exe

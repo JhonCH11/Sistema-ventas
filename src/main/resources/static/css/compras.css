@@ -1,0 +1,16 @@
+.linea-compra { display: grid; grid-template-columns: minmax(220px, 2fr) minmax(125px, 1fr) minmax(150px, 1fr) 110px auto; gap: 14px; align-items: end; padding: 22px 0; border-bottom: 1px solid #d4dde2; }
+.linea-compra .campo-formulario { min-width: 0; margin: 0; }
+.linea-compra label { display: block; }
+.linea-compra select, .linea-compra input { margin-top: 8px; }
+.subtotal-compra { display: flex; flex-direction: column; gap: 14px; padding-bottom: 12px; }
+.subtotal-compra output { font-weight: 700; overflow-wrap: anywhere; }
+.linea-compra button { min-height: 48px; }
+#agregar-linea { margin-top: 20px; }
+.observacion-compra { margin-top: 28px; }
+.total-compra { font-size: 22px; font-weight: 700; overflow-wrap: anywhere; }
+.proveedor-activo { display: flex; align-items: center; gap: 12px; }
+.proveedor-activo input { width: 22px; height: 22px; min-height: 0; }
+.resumen-reporte { grid-template-columns: minmax(0,1fr) minmax(0,1.5fr); }
+.resumen-reporte dd { min-width: 0; white-space: normal; overflow-wrap: anywhere; }
+@media (max-width: 1000px) { .linea-compra { grid-template-columns: repeat(2, minmax(0,1fr)); } .linea-compra .campo-formulario:first-child { grid-column: 1 / -1; } }
+@media (max-width: 520px) { .linea-compra { grid-template-columns: minmax(0,1fr); } .linea-compra .campo-formulario:first-child { grid-column: auto; } }

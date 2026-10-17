@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="es" xmlns:th="https://www.thymeleaf.org"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Reportes | Minimarket</title><link rel="stylesheet" th:href="@{/css/aplicacion.css}"></head>
+<body><header class="barra-superior"><a class="marca enlace-marca" th:href="@{/}">Minimarket</a><a class="enlace-volver" th:href="@{/}">Volver al inicio</a></header>
+<main class="contenido-principal"><h1>Reportes</h1><div class="pie-panel"><a class="boton-secundario" th:href="@{/reportes/resumen-diario}">Resumen diario</a><a class="boton-secundario" th:href="@{/stock/mermas}">P&#233;rdidas por merma</a></div>
+<form class="acciones-formulario" th:action="@{/reportes}" method="get" style="margin-top:24px;flex-wrap:wrap">
+<div class="campo-formulario"><label for="desde">Desde</label><input id="desde" name="desde" type="date" th:value="${desde}" required></div>
+<div class="campo-formulario"><label for="hasta">Hasta</label><input id="hasta" name="hasta" type="date" th:value="${hasta}" required></div>
+<button class="boton-secundario">Consultar</button></form>
+<p role="alert" class="mensaje-formulario mensaje-error" th:if="${error}" th:text="${error}"></p>
+<section th:if="${reporte != null}">
+<h2>Ventas del período</h2>
+<dl class="resumen-reporte"><dt>Total registrado</dt><dd th:text="${'S/ ' + #numbers.formatDecimal(reporte.bruto,1,2)}"></dd>
+<dt>Anulaciones</dt><dd th:text="${'S/ ' + #numbers.formatDecimal(reporte.anulado,1,2)}"></dd>
+<dt>Devoluciones de estas ventas</dt><dd th:text="${'S/ ' + #numbers.formatDecimal(reporte.devuelto,1,2)}"></dd>
+<dt>Ventas netas actuales</dt><dd class="importe-destacado" th:text="${'S/ ' + #numbers.formatDecimal(reporte.neto,1,2)}"></dd></dl>
+<h2>Por medio de pago</h2><div class="tabla-contenedor"><table><thead><tr><th>Medio</th><th>Cobros vigentes</th><th>Devoluciones de estas ventas</th><th>Neto actual</th><th>Reembolsos realizados en el período</th></tr></thead><tbody>
+<tr th:each="m : ${reporte.medios}"><td th:text="${m.medio}"></td><td th:text="${'S/ ' + #numbers.formatDecimal(m.cobrado,1,2)}"></td><td th:text="${'S/ ' + #numbers.formatDecimal(m.devoluciones,1,2)}"></td><td th:text="${'S/ ' + #numbers.formatDecimal(m.neto,1,2)}"></td><td th:text="${'S/ ' + #numbers.formatDecimal(m.reembolsosPeriodo,1,2)}"></td></tr></tbody></table></div>
+<h2>Detalle de ventas</h2><p th:if="${#lists.isEmpty(reporte.ventas)}">No hay ventas en estas fechas.</p>
+<div class="tabla-contenedor" th:if="${not #lists.isEmpty(reporte.ventas)}"><table><thead><tr><th>Fecha</th><th>Ticket</th><th>Estado</th><th>Medio</th><th>Total original</th><th>Devuelto</th><th>Neto</th></tr></thead><tbody>
+<tr th:each="v : ${reporte.ventas}"><td th:text="${#temporals.format(v.fecha,'dd/MM/yyyy HH:mm')}"></td><td><a th:href="@{/ventas/ticket/{n}(n=${v.numero})}" th:text="${v.numero}"></a></td><td th:text="${v.estado}"></td><td th:text="${v.medio}"></td><td th:text="${v.total}"></td><td th:text="${v.devuelto}"></td><td th:text="${v.neto()}"></td></tr></tbody></table></div>
+</section></main></body></html>
+

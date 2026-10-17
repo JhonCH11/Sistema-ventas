@@ -1,0 +1,9 @@
+<!doctype html>
+<html lang="es" xmlns:th="https://www.thymeleaf.org"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Alertas de inventario | Minimarket</title><link rel="stylesheet" th:href="@{/css/aplicacion.css}"></head>
+<body><header class="barra-superior"><a class="marca enlace-marca" th:href="@{/}">Minimarket</a><a class="enlace-volver" th:href="@{/}">Volver al inicio</a></header>
+<main class="contenido-principal"><p class="etiqueta">Inventario</p><h1>Alertas de inventario</h1>
+<p th:if="${alertasStock.total==0}">No hay productos agotados ni con stock bajo.</p>
+<th:block th:if="${alertasStock.total>0}"><p><strong class="alerta-agotado" th:text="${'Agotados: '+alertasStock.agotados}"></strong><span class="separador-alertas" aria-hidden="true"> | </span><strong class="alerta-bajo" th:text="${'Stock bajo: '+alertasStock.bajos}"></strong></p>
+<div th:replace="~{fragments/alertas-stock :: tabla(${alertasStock.productos})}"></div></th:block>
+</main>
+</body></html>

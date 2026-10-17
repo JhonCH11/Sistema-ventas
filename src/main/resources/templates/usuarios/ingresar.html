@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="es" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ingresar | Minimarket</title>
+    <link rel="stylesheet" th:href="@{/css/aplicacion.css}">
+</head>
+<body>
+<main class="pantalla-formulario">
+    <section class="formulario-panel" aria-labelledby="titulo-ingreso">
+        <div class="marca marca-formulario">
+            <span class="marca-iniciales" aria-hidden="true">MM</span>
+            <span>Minimarket</span>
+        </div>
+        <h1 id="titulo-ingreso">Ingresar al sistema</h1>
+
+        <p class="mensaje-formulario mensaje-error" th:if="${param.error}">
+            Usuario o contraseña incorrectos.
+        </p>
+        <p class="mensaje-formulario mensaje-exito" th:if="${param.salio}">
+            La sesión se cerró correctamente.
+        </p>
+
+        <p class="mensaje-formulario mensaje-error" th:if="${param.inactivo}" role="alert">Su acceso fue desactivado o su usuario cambio. Consulte al administrador y vuelva a ingresar.</p>
+        <form th:action="@{/ingresar}" method="post">
+            <div class="campo-formulario">
+                <label for="username">Usuario</label>
+                <input id="username" name="username" type="text" autocomplete="username" autofocus required>
+            </div>
+
+            <div class="campo-formulario">
+                <label for="password">Contraseña</label>
+                <input id="password" name="password" type="password" autocomplete="current-password" required>
+            </div>
+
+            <button class="boton-principal" type="submit">Ingresar</button>
+        </form>
+    </section>
+</main>
+</body>
+</html>

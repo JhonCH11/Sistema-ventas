@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="es" xmlns:th="https://www.thymeleaf.org">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Ventas realizadas</title><link rel="stylesheet" th:href="@{/css/aplicacion.css}"></head>
+<body>
+<header class="barra-superior"><a class="marca enlace-marca" th:href="@{/}">Minimarket</a><a class="enlace-volver" th:href="@{/}">Volver al inicio</a></header>
+<main class="contenido-principal">
+<div class="encabezado-lista"><h1>Ventas realizadas</h1><a class="boton-principal boton-ancho-auto" th:href="@{/ventas}">Nueva venta</a></div>
+<form th:action="@{/ventas/realizadas}" method="get" class="acciones-formulario">
+<div class="campo-formulario"><label for="fecha">Fecha</label><input id="fecha" name="fecha" type="date" th:value="${fecha}" required></div>
+<button class="boton-secundario">Consultar</button>
+</form>
+<p class="importe-destacado" th:text="${'Total de ventas vigentes: S/ ' + #numbers.formatDecimal(totalVigente, 1, 2)}"></p>
+<p th:text="${'Ventas registradas: ' + #lists.size(ventas)}"></p>
+<section class="tabla-contenedor" th:if="${not #lists.isEmpty(ventas)}">
+<table><thead><tr><th>Hora</th><th>Ticket</th><th>Vendedor</th><th>Estado</th><th>Total</th><th>Detalle</th></tr></thead>
+<tbody><tr th:each="venta : ${ventas}">
+<td th:text="${#temporals.format(venta.vendidaEn, 'HH:mm')}"></td>
+<td th:text="${venta.numeroTicket}"></td><td th:text="${venta.vendedor.nombre}"></td>
+<td th:text="${venta.estado.name() == 'CONFIRMADA' ? 'Confirmada' : 'Anulada'}"></td>
+<td th:text="${'S/ ' + venta.total}"></td>
+<td><a class="boton-secundario" th:href="@{/ventas/ticket/{numero}(numero=${venta.numeroTicket})}">Ver ticket</a></td>
+</tr></tbody></table></section>
+<section class="estado-vacio" th:if="${#lists.isEmpty(ventas)}"><h2>No hay ventas en esta fecha</h2></section>
+</main></body></html>

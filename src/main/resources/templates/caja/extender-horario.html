@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="es" xmlns:th="https://www.thymeleaf.org"><head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Extender horario | Minimarket</title><link rel="stylesheet" th:href="@{/css/aplicacion.css}">
+</head><body><main class="pantalla-formulario"><section class="formulario-panel">
+    <h1>Extender horario de hoy</h1>
+    <p th:text="${'Cierre previsto: ' + horario.horaCierre}"></p>
+    <p class="mensaje-formulario mensaje-error" th:if="${errorGeneral}" th:text="${errorGeneral}" role="alert"></p>
+    <form th:action="@{/caja/horario/extender}" th:object="${extensionFormulario}" method="post">
+        <input type="hidden" th:field="*{fecha}">
+        <p class="error-formulario" th:if="${#fields.hasErrors('fecha')}" th:errors="*{fecha}"></p>
+        <div class="campo-formulario"><label for="nuevaHora">Nueva hora de cierre de hoy</label>
+            <input id="nuevaHora" type="time" th:field="*{nuevaHora}" step="60" max="23:59" required>
+            <p class="error-formulario" th:if="${#fields.hasErrors('nuevaHora')}" th:errors="*{nuevaHora}"></p>
+        </div>
+        <div class="campo-formulario"><label for="motivo">Motivo de la extensi&#243;n</label>
+            <input id="motivo" th:field="*{motivo}" maxlength="200" required>
+            <p class="error-formulario" th:if="${#fields.hasErrors('motivo')}" th:errors="*{motivo}"></p>
+        </div>
+        <div class="acciones-formulario"><a class="boton-secundario" th:href="@{/caja}">Cancelar</a>
+            <button class="boton-principal boton-ancho-auto" type="submit">Autorizar extensi&#243;n</button></div>
+    </form>
+</section></main></body></html>

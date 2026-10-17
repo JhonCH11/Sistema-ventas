@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="es" xmlns:th="https://www.thymeleaf.org"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Anulaciones y devoluciones</title><link rel="stylesheet" th:href="@{/css/aplicacion.css}"></head>
+<body><header class="barra-superior"><a class="marca" th:href="@{/}">Minimarket</a><a th:href="@{/ventas/ticket/{n}(n=${ticket.venta.numeroTicket})}">Volver al ticket</a></header>
+<main class="contenido-principal"><h1>Anulaciones y devoluciones</h1><p th:text="${ticket.venta.numeroTicket}"></p><p th:text="${'Estado: ' + ticket.venta.estado}"></p>
+<p class="mensaje-formulario mensaje-exito" th:if="${mensaje}" th:text="${mensaje}"></p><p class="mensaje-formulario mensaje-error" th:if="${error}" th:text="${error}"></p>
+<section th:if="${ticket.venta.estado.name() == 'CONFIRMADA'}">
+<h2>Devolver producto</h2>
+<form th:action="@{/ventas/ticket/{n}/correcciones/devolver(n=${ticket.venta.numeroTicket})}" method="post">
+<input type="hidden" name="token" th:value="${token}">
+<div class="cuadricula-formulario">
+<div class="campo-formulario"><label for="detalle">Producto de la venta</label><select id="detalle" name="detalle" required><option th:each="d : ${ticket.detalles}" th:value="${d.id}" th:text="${d.productoNombre + ' | Vendido: ' + d.cantidad + ' | Precio: S/ ' + d.precioUnitario}"></option></select></div>
+<div class="campo-formulario"><label for="cantidad">Cantidad o peso devuelto</label><input id="cantidad" name="cantidad" type="number" min="0.01" step="0.01" required></div>
+<div class="campo-formulario"><label for="motivo-devolucion">Motivo</label><select id="motivo-devolucion" name="motivo"><option value="PRODUCTO_EQUIVOCADO">Producto equivocado</option><option value="CLIENTE_CAMBIO_OPINION">Cliente cambió de opinión</option><option value="PRODUCTO_MAL_ESTADO">Producto en mal estado</option></select></div>
+<div class="campo-formulario"><label for="reponeStock">Estado revisado por el administrador</label><select id="reponeStock" name="reponeStock" required><option value="">Seleccionar estado del producto</option><option value="true">Buen estado: reincorporar al stock vendible</option><option value="false">Dañado o mal estado: no reincorporar al stock vendible</option></select></div>
+<div class="campo-formulario"><label for="observacion-devolucion">Observación</label><input id="observacion-devolucion" name="observacion" maxlength="300"></div>
+<div class="campo-formulario"><label for="admin-devolucion">Usuario administrador</label><input id="admin-devolucion" name="administrador" autocomplete="off" required></div>
+<div class="campo-formulario"><label for="clave-devolucion">Clave del administrador</label><input id="clave-devolucion" name="clave" type="password" autocomplete="off" required></div>
+</div><button class="boton-principal boton-ancho-auto">Autorizar devolución y reembolso</button></form>
+<hr><h2>Anular toda la venta</h2>
+<form th:action="@{/ventas/ticket/{n}/correcciones/anular(n=${ticket.venta.numeroTicket})}" method="post">
+<div class="cuadricula-formulario">
+<div class="campo-formulario"><label for="motivo-anulacion">Motivo</label><select id="motivo-anulacion" name="motivo"><option value="ERROR_REGISTRO">Error al registrar</option><option value="CLIENTE_CANCELO">Cliente canceló</option><option value="PAGO_NO_CONFIRMADO">Pago no confirmado</option></select></div>
+<div class="campo-formulario"><label for="observacion-anulacion">Observación</label><input id="observacion-anulacion" name="observacion" maxlength="300"></div>
+<div class="campo-formulario"><label for="admin-anulacion">Usuario administrador</label><input id="admin-anulacion" name="administrador" autocomplete="off" required></div>
+<div class="campo-formulario"><label for="clave-anulacion">Clave del administrador</label><input id="clave-anulacion" name="clave" type="password" autocomplete="off" required></div>
+</div><button class="boton-secundario">Autorizar anulación completa</button></form>
+</section>
+<h2>Devoluciones registradas</h2><p th:if="${#lists.isEmpty(historial)}">No hay devoluciones.</p>
+<div class="tabla-contenedor" th:if="${not #lists.isEmpty(historial)}"><table><thead><tr><th>Fecha</th><th>Producto</th><th>Cantidad</th><th>Reembolso</th><th>Motivo</th><th>Repone stock</th></tr></thead><tbody><tr th:each="h : ${historial}"><td th:text="${h.fecha}"></td><td th:text="${h.producto}"></td><td th:text="${h.cantidad}"></td><td th:text="${'S/ ' + h.importe}"></td><td th:text="${h.motivo}"></td><td th:text="${h.repone_stock ? 'Sí' : 'No'}"></td></tr></tbody></table></div>
+</main></body></html>
+

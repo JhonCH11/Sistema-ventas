@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="es" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nueva venta | Minimarket</title>
+    <link rel="stylesheet" th:href="@{/css/aplicacion.css}">
+</head>
+<body>
+<main class="pantalla-formulario">
+    <section class="formulario-panel" aria-labelledby="titulo-venta">
+        <div class="marca marca-formulario"><span class="marca-iniciales" aria-hidden="true">MM</span><span>Minimarket</span></div>
+        <h1 id="titulo-venta">Nueva venta</h1>
+        <p class="mensaje-formulario mensaje-error" th:text="${mensaje}">No hay una caja abierta para hoy.</p>
+        <a class="boton-principal" th:href="@{/caja}">Ir a caja</a>
+    </section>
+</main>
+</body>
+</html>

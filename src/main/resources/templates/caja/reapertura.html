@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="es" xmlns:th="https://www.thymeleaf.org"><head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Reabrir caja | Minimarket</title><link rel="stylesheet" th:href="@{/css/aplicacion.css}">
+</head><body><main class="pantalla-formulario"><section class="formulario-panel">
+    <h1>Reabrir caja de hoy</h1>
+    <p>Se conserva el cierre anterior. Las nuevas ventas contin&#250;an en la misma caja y deber&#225; cerrarla nuevamente al terminar.</p>
+    <p class="mensaje-formulario mensaje-error" th:if="${errorGeneral}" th:text="${errorGeneral}" role="alert"></p>
+    <form th:action="@{/caja/reapertura}" th:object="${formulario}" method="post">
+        <input type="hidden" th:field="*{fecha}"><input type="hidden" th:field="*{cierreId}">
+        <p class="error-formulario" th:errors="*{fecha}"></p><p class="error-formulario" th:errors="*{cierreId}"></p>
+        <div class="campo-formulario"><label for="motivo">Motivo de la reapertura</label>
+            <input id="motivo" th:field="*{motivo}" maxlength="200" required>
+            <p class="error-formulario" th:errors="*{motivo}"></p></div>
+        <div class="acciones-formulario"><a class="boton-secundario" th:href="@{/caja}">Cancelar</a>
+            <button class="boton-principal boton-ancho-auto" type="submit">Autorizar reapertura</button></div>
+    </form>
+</section></main></body></html>

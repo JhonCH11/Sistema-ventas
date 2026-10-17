@@ -1,0 +1,10 @@
+<!doctype html>
+<html lang="es" xmlns:th="https://www.thymeleaf.org"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Compras | Minimarket</title><link rel="stylesheet" th:href="@{/css/aplicacion.css}"></head>
+<body><header class="barra-superior"><a class="marca enlace-marca" th:href="@{/}">Minimarket</a><a class="enlace-volver" th:href="@{/}">Volver al inicio</a></header>
+<main class="contenido-principal"><div class="encabezado-lista"><div><p class="etiqueta">Administraci&#243;n</p><h1>Compras y proveedores</h1></div><div class="acciones-encabezado"><a class="boton-secundario" th:href="@{/compras/proveedores}">Proveedores</a><a class="boton-principal boton-ancho-auto" th:href="@{/compras/nueva}">Nueva compra</a></div></div>
+<p class="mensaje-formulario mensaje-error" th:if="${error}" th:text="${error}" role="alert"></p>
+<form class="acciones-formulario filtros-mermas" method="get" th:action="@{/compras}"><div class="campo-formulario"><label for="desde">Desde</label><input id="desde" name="desde" type="date" th:value="${desde}" required></div><div class="campo-formulario"><label for="hasta">Hasta</label><input id="hasta" name="hasta" type="date" th:value="${hasta}" required></div><button class="boton-secundario">Consultar</button></form>
+<p th:if="${#lists.isEmpty(compras)}">No hay compras ni ingresos en estas fechas.</p>
+<div class="tabla-contenedor" th:unless="${#lists.isEmpty(compras)}"><table><thead><tr><th>Fecha</th><th>Proveedor</th><th>Documento</th><th>Registro</th><th>Total</th><th></th></tr></thead><tbody><tr th:each="c:${compras}"><td th:text="${#temporals.format(c.fecha,'dd/MM/yyyy HH:mm')}"></td><td th:text="${c.proveedor}"></td><td th:text="${c.documento?:'-'}"></td><td th:text="${c.completa?'Compra':'Ingreso simple / Excel'}"></td><td th:text="${'S/ '+#numbers.formatDecimal(c.total,1,2)}"></td><td><a class="boton-secundario" th:href="@{/compras/{id}(id=${c.id})}">Ver detalle</a></td></tr></tbody></table></div>
+<p th:if="${#lists.size(compras)==300}">Se muestran los 300 registros m&#225;s recientes. Reduzca el rango de fechas para ver otros.</p>
+</main></body></html>

@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="es" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock | Minimarket</title>
+    <link rel="stylesheet" th:href="@{/css/aplicacion.css}">
+    <script defer th:src="@{/js/stock.js}"></script>
+</head>
+<body>
+<header class="barra-superior">
+    <a class="marca enlace-marca" th:href="@{/}">
+        <span class="marca-iniciales" aria-hidden="true">MM</span>
+        <span>Minimarket</span>
+    </a>
+    <a class="enlace-volver" th:href="@{/}">Volver al inicio</a>
+</header>
+
+<main class="contenido-principal">
+    <section class="encabezado-lista">
+        <div>
+            <p class="etiqueta">Inventario</p>
+            <h1>Stock</h1>
+        </div>
+    </section>
+
+    <p class="mensaje-formulario mensaje-exito" th:if="${mensaje}" th:text="${mensaje}">Guardado.</p>
+    <div class="mensaje-formulario mensaje-error" th:if="${errorGeneral}" th:text="${errorGeneral}">Error.</div>
+
+    <section class="seccion-operacion" th:if="${not #lists.isEmpty(productos)}">
+        <h2>Registrar ingreso de mercadería</h2>
+        <form th:action="@{/stock/ingresos}" th:object="${formulario}" method="post" novalidate>
+            <div class="cuadricula-formulario">
+                <div class="campo-formulario campo-completo">
+                    <label for="productoId">Producto</label>
+                    <select id="productoId" th:field="*{productoId}" autofocus>
+                        <option value="">Seleccionar producto</option>
+                        <option th:each="producto : ${productos}" th:unless="${producto.liquidacion}" th:value="${producto.id}"
+                                th:attr="data-tipo=${producto.tipoVenta.name()}"
+                                th:text="${producto.nombre + (producto.tipoVenta == T(com.minimarket.productos.domain.TipoVenta).PESO ? ' (por kilo)' : ' (por unidad)')}">Arroz</option>
+                    </select>
+                    <p class="error-formulario" th:if="${#fields.hasErrors('productoId')}" th:errors="*{productoId}">Error</p>
+                </div>
+                <div class="campo-formulario">
+                    <div class="etiqueta-con-ayuda">
+                        <label id="etiqueta-cantidad" for="cantidad">Cantidad ingresada</label>
+                        <span class="ayuda-stock">
+                            <button type="button" class="icono-ayuda" aria-label="Ayuda sobre la cantidad ingresada" aria-controls="ayuda-cantidad" aria-expanded="false" title="Ingrese solo la mercaderia que esta entrando: kilos con hasta dos decimales o unidades enteras."><span aria-hidden="true">i</span></button>
+                            <span id="ayuda-cantidad" class="texto-ayuda-stock" role="tooltip" hidden>Seleccione un producto. Ingrese solo lo que est&#225; entrando: kilos (por ejemplo, 0.50 para medio kilo) o unidades enteras (por ejemplo, 6). No ingrese el stock total.</span>
+                        </span>
+                    </div>
+                    <input id="cantidad" type="number" th:field="*{cantidad}" min="0.01" step="0.01" aria-describedby="ayuda-cantidad">
+                    <p class="error-formulario" th:if="${#fields.hasErrors('cantidad')}" th:errors="*{cantidad}">Error</p>
+                </div>
+                <div class="campo-formulario">
+                    <div class="etiqueta-con-ayuda">
+                        <label id="etiqueta-costo" for="costoUnitario">Costo de compra por unidad o kilo (S/)</label>
+                        <span class="ayuda-stock">
+                            <button type="button" class="icono-ayuda" aria-label="Ayuda sobre el costo de compra" aria-controls="ayuda-costo" aria-expanded="false" title="Ingrese lo que pago por un kilo o una unidad, no el costo de todo el ingreso ni el precio de venta."><span aria-hidden="true">i</span></button>
+                            <span id="ayuda-costo" class="texto-ayuda-stock" role="tooltip" hidden>Es lo que pag&#243; al comprar un kilo o una unidad. No es el precio de venta ni el costo de todo el ingreso. Ejemplo: si 5 kg costaron S/ 20.00, ingrese 4.00.</span>
+                        </span>
+                    </div>
+                    <input id="costoUnitario" type="number" th:field="*{costoUnitario}" min="0.01" step="0.01" aria-describedby="ayuda-costo">
+                    <p class="error-formulario" th:if="${#fields.hasErrors('costoUnitario')}" th:errors="*{costoUnitario}">Error</p>
+                </div>
+                <div class="campo-formulario campo-completo">
+                    <label for="observacion">Observación (opcional)</label>
+                    <input id="observacion" type="text" th:field="*{observacion}">
+                    <p class="error-formulario" th:if="${#fields.hasErrors('observacion')}" th:errors="*{observacion}">Error</p>
+                </div>
+            </div>
+            <button class="boton-principal boton-ancho-auto" type="submit">Guardar ingreso</button>
+        </form>
+    </section>
+
+    <section class="tabla-contenedor" th:if="${not #lists.isEmpty(productos)}">
+        <table>
+            <thead>
+            <tr>
+                <th>Producto</th>
+                <th>Forma de venta</th>
+                <th>Stock disponible</th>
+                <th>Stock mínimo</th>
+                <th>Estado</th>
+                <th th:if="${administrador}">Acciones</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="producto : ${productos}">
+                <td th:text="${producto.nombre}">Arroz</td>
+                <td th:text="${producto.tipoVenta == T(com.minimarket.productos.domain.TipoVenta).PESO ? 'Por kilo' : 'Por unidad'}">Por unidad</td>
+                <td class="precio-actual" th:text="${producto.stockActual + (producto.tipoVenta == T(com.minimarket.productos.domain.TipoVenta).PESO ? ' kg' : ' unid.')}">0 unid.</td>
+                <td th:text="${producto.stockMinimo + (producto.tipoVenta == T(com.minimarket.productos.domain.TipoVenta).PESO ? ' kg' : ' unid.')}">0 unid.</td>
+                <td th:text="${producto.stockActual.signum() == 0 ? 'Agotado' : producto.stockActual.compareTo(producto.stockMinimo) <= 0 ? 'Stock bajo' : 'Disponible'}"
+                    th:class="${producto.stockActual.compareTo(producto.stockMinimo) <= 0 ? 'error-formulario' : ''}"></td>
+                <td th:if="${administrador}"><a class="boton-secundario" th:unless="${producto.liquidacion}" th:href="@{/stock/ajustes/{id}(id=${producto.id})}">Ajustar stock</a><a class="boton-secundario" th:if="${producto.liquidacion}" th:href="@{/stock/mermas/nueva(productoId=${producto.id})}">Registrar merma</a></td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <h2>Últimos movimientos de stock</h2>
+    <p th:if="${#lists.isEmpty(movimientos)}">No hay movimientos registrados.</p>
+    <section class="tabla-contenedor" th:if="${not #lists.isEmpty(movimientos)}"><table>
+    <thead><tr><th>Fecha</th><th>Producto</th><th>Movimiento</th><th>Cantidad</th><th>Motivo</th><th>Usuario</th></tr></thead>
+    <tbody><tr th:each="m : ${movimientos}"><td th:text="${#temporals.format(m.registradoEn, 'dd/MM/yyyy HH:mm')}"></td><td th:text="${m.producto.nombre}"></td><td th:text="${m.tipo}"></td><td th:text="${m.cantidad}"></td><td th:text="${m.motivo}"></td><td th:text="${m.usuario.nombre}"></td></tr></tbody></table></section>
+
+    <section class="estado-vacio" th:if="${#lists.isEmpty(productos)}">
+        <h2>Primero registra un producto</h2>
+        <a class="boton-principal boton-ancho-auto" th:href="@{/productos}">Ir a productos</a>
+    </section>
+</main>
+</body>
+</html>

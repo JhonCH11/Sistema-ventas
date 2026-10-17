@@ -1,0 +1,22 @@
+.ticket-contenido { max-width: 820px; }
+.ticket-contenido .tabla-contenedor table { min-width: 0; table-layout: fixed; }
+.ticket-contenido td, .ticket-contenido th { overflow-wrap: anywhere; }
+.ticket-contenido th:first-child { width: 42%; }
+.controles-impresion { flex-wrap: wrap; align-items: center; margin-top: 24px; }
+.controles-impresion .campo-formulario { margin-bottom: 0; }
+.aviso-impresion { color: #52616b; }
+@media print {
+    @page { size: auto; margin: 4mm; }
+    html, body { min-width: 0; background: #fff; color: #000; }
+    .acciones-formulario, .aviso-impresion { display: none !important; }
+    .ticket-contenido { margin: 0; padding: 0; max-width: none; }
+    .ticket-contenido.formato-ticket { width: 72mm; font-size: 10pt; }
+    .ticket-contenido.formato-a4 { width: 100%; max-width: 190mm; font-size: 12pt; }
+    .ticket-contenido h1 { font-size: 16pt; }
+    .ticket-contenido h2 { font-size: 13pt; }
+    .ticket-contenido p { margin: 6px 0; overflow-wrap: anywhere; }
+    .ticket-contenido .tabla-contenedor { overflow: visible; border: 0; border-radius: 0; }
+    .ticket-contenido table { width: 100%; }
+    .ticket-contenido td, .ticket-contenido th { padding: 5px 2px; font-size: inherit; color: #000; background: #fff; }
+    .ticket-contenido tr { break-inside: avoid; }
+}

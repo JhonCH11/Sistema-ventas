@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="es" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Productos | Minimarket</title>
+    <link rel="stylesheet" th:href="@{/css/aplicacion.css}">
+</head>
+<body>
+<header class="barra-superior">
+    <a class="marca enlace-marca" th:href="@{/}">
+        <span class="marca-iniciales" aria-hidden="true">MM</span>
+        <span>Minimarket</span>
+    </a>
+    <a class="enlace-volver" th:href="@{/}">Volver al inicio</a>
+</header>
+
+<main class="contenido-principal">
+    <section class="encabezado-lista">
+        <div>
+            <p class="etiqueta">Inventario</p>
+            <h1>Productos</h1>
+        </div>
+        <div class="acciones-encabezado">
+            <a class="boton-secundario" th:href="@{/productos/categorias/nueva}">Nueva categoría</a>
+            <a class="boton-principal boton-ancho-auto" th:href="@{/productos/nuevo}">Nuevo producto</a>
+        </div>
+    </section>
+
+    <p class="mensaje-formulario mensaje-exito" th:if="${mensaje}" th:text="${mensaje}">Guardado.</p>
+    <p class="mensaje-formulario mensaje-error" th:if="${error}" th:text="${error}">Error.</p>
+
+    <section class="tabla-contenedor" th:if="${not #lists.isEmpty(productos)}">
+        <table>
+            <thead>
+            <tr>
+                <th>Producto</th>
+                <th>Categoría</th>
+                <th>Venta</th>
+                <th>Precio</th>
+                <th>Stock</th>
+                <th>Mínimo</th>
+                <th>Acción</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="producto : ${productos}">
+                <td th:text="${producto.nombre}">Arroz</td>
+                <td th:text="${producto.categoria.nombre}">Abarrotes</td>
+                <td th:text="${producto.tipoVenta == T(com.minimarket.productos.domain.TipoVenta).PESO ? 'Por kilo' : 'Por unidad'}">Por unidad</td>
+                <td th:text="${'S/ ' + producto.precioActual}">S/ 0.00</td>
+                <td th:text="${producto.stockActual + (producto.tipoVenta == T(com.minimarket.productos.domain.TipoVenta).PESO ? ' kg' : ' unid.')}">0 unid.</td>
+                <td th:text="${producto.stockMinimo + (producto.tipoVenta == T(com.minimarket.productos.domain.TipoVenta).PESO ? ' kg' : ' unid.')}">0 unid.</td>
+                <td><a class="boton-secundario boton-tabla" th:unless="${producto.liquidacion}" th:href="@{/productos/{id}/editar(id=${producto.id})}">Editar</a><span th:if="${producto.liquidacion}">Liquidaci&#243;n</span></td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="estado-vacio" th:if="${#lists.isEmpty(productos)}">
+        <h2>Aún no hay productos registrados</h2>
+        <a class="boton-principal boton-ancho-auto" th:href="@{/productos/categorias/nueva}">Crear primera categoría</a>
+    </section>
+</main>
+</body>
+</html>
